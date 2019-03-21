@@ -30,7 +30,7 @@ class Kill(commands.Cog):
         if victim.id == self.bot.user.id:
             await ctx.send("I refuse to kill myself!")
             
-        else if victim.id == user.id:            
+        elif victim.id == user.id:            
             await ctx.send("I won\'t let you kill yourself!")
 
         else:
