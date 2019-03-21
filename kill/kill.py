@@ -34,4 +34,4 @@ class Kill(commands.Cog):
             await ctx.send("I won\'t let you kill yourself!")
 
         else:
-            await ctx.send(choice(kill_list).format(victim = victim.display_name, killer = user.display_name)
+            await ctx.send(choice(kill_list).format(victim = victim.display_name, killer = user.display_name))
