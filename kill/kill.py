@@ -24,9 +24,9 @@ class Kill(commands.Cog):
     @commands.command()
     async def kill(self, ctx, victim: discord.Member):
         """
-            Kills the mentioned user
+            Kills the mentioned victim
 
-            `user` the user to kill
+            
         """
 
         msg = " "
