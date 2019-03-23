@@ -23,6 +23,11 @@ class Kill(commands.Cog):
 
     @commands.command()
     async def kill(self, ctx, victim: discord.Member):
+        """
+            Kills the mentioned user
+
+            `user` the user to kill
+        """
 
         msg = " "
         user = ctx.message.author
