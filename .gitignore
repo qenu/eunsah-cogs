@@ -47,5 +47,6 @@ Temporary Items
 .apdisk
 __pycache__/
 audiotest/
-trusty-cogs.sublime-workspace
 *.sublime-workspace
+
+# i stole this from TrustyJAID
