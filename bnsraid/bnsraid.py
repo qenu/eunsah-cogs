@@ -58,7 +58,8 @@ class Bnsraid(commands.Cog):
         )
         default_global = {
             'raids' : {},
-            'emote' : '✅'
+            'emote' : '✅',
+            'cancel' : '❎'
         }
 
         self.config.register_global(**default_global)
@@ -94,6 +95,7 @@ class Bnsraid(commands.Cog):
 
         message = await ctx.send(embed = discord.Embed.from_dict({'description' : '處理中...'}))
         await message.add_reaction(await self.config.emote())
+        await message.add_reaction(await self.config.cancel())
 
         try:
             description += ''.join(content[1:])
@@ -102,7 +104,7 @@ class Bnsraid(commands.Cog):
 
         async with self.config.raids() as raids:
             raids[str(message.id)] = {
-                'msg' : [ctx.channel.id, message.id],
+                'msg' : [ctx.channel.id, message.id, ctx.author.id],
                 'embed' : {
                     'title' : title,
                     'color' : ctx.author.color.value,
@@ -134,7 +136,14 @@ class Bnsraid(commands.Cog):
         if reaction.emoji == emote:
             async with self.config.raids() as raids:
                 raids[message_id]['signups'][str(user.id)] = str(user.display_name)
-        await self._embed_updater(message_id=message_id)
+            await self._embed_updater(message_id=message_id)
+            return
+        cancel = await self.config.cancel()
+        if reaction.emoji == cancel:
+            async with self.config.raids() as raids:
+                author = raids[message_id]['msg'][2]
+                if str(user.id) == str(author): self._raid_delete(message_id)
+        
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User):
