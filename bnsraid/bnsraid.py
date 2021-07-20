@@ -92,7 +92,7 @@ class Bnsraid(commands.Cog):
         title = content[0]
         description = ''
 
-        message = await ctx.send(embed = discord.Embed.from_dict({}))
+        message = await ctx.send(embed = discord.Embed.from_dict({'description' : '處理中...'}))
         await message.add_reaction(await self.config.emote())
 
         try:
