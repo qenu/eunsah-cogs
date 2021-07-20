@@ -138,11 +138,14 @@ class Bnsraid(commands.Cog):
                 raids[message_id]['signups'][str(user.id)] = str(user.display_name)
             await self._embed_updater(message_id=message_id)
             return
+        
         cancel = await self.config.cancel()
+        await ctx.send('herhe')
         if reaction.emoji == cancel:
             author = raid[message_id]['msg'][2]
             await ctx.send(f'u:{user.id}  a{author}')
             if str(user.id) == str(author): self._raid_delete(message_id)
+            return
         
 
     @commands.Cog.listener()
