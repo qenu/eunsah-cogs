@@ -114,7 +114,7 @@ class Bnsraid(commands.Cog):
                             'value' : '-'
                         }
                     ],
-                    'footer' : 'id: '+str(message.id)
+                    'footer' : {'text' : 'id: '+str(message.id)}
                 },
                 'signups' : {},
                 'time' : time()
