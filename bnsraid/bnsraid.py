@@ -161,8 +161,8 @@ class Bnsraid(commands.Cog):
 
             username = raids[message_id]['signups'].values()
             if len(username) != 0:
-                username = '\n'.join([str(name) for name in username])
-                raids[message_id]['embed']['fields'][0]['value'] = username
+                name = '\n'.join([str(name) for name in username])
+                raids[message_id]['embed']['fields'][0]['value'] = name
             else:
                 raids[message_id]['embed']['fields'][0]['value'] = '-'
             raids[message_id]['embed']['fields'][0]['name'] = '參加人員：' + str(len(username))
