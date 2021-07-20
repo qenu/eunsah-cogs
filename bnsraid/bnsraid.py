@@ -138,7 +138,7 @@ class Bnsraid(commands.Cog):
             await self._embed_updater(message_id=message_id)
             
         if reaction.emoji == await self.config.cancel():
-            if str(user.id) == str(author): self._raid_delete(message_id)
+            if str(user.id) == str(author): await self._raid_delete(message_id)
         
 
     @commands.Cog.listener()
