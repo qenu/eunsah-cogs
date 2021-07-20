@@ -132,12 +132,14 @@ class Bnsraid(commands.Cog):
         if user.id == self.bot.user.id: return
 
         emote = await self.config.emote()
+        await ctx.send('herhe')
 
         if reaction.emoji == emote:
             async with self.config.raids() as raids:
                 raids[message_id]['signups'][str(user.id)] = str(user.display_name)
             await self._embed_updater(message_id=message_id)
             return
+        await ctx.send('herhe')
         
         cancel = await self.config.cancel()
         await ctx.send('herhe')
