@@ -127,6 +127,7 @@ class Bnsraid(commands.Cog):
     async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
         message_id = str(reaction.message.id)
         raid = await self.config.raids()
+        author = raid[message_id]['msg'][2]
         message_list = list(raid.keys())
         if message_id not in message_list: return
         if user.id == self.bot.user.id: return
@@ -138,7 +139,6 @@ class Bnsraid(commands.Cog):
             return
         
         if reaction.emoji == await self.config.cancel():
-            author = raid[message_id]['msg'][2]
             await ctx.send(f'u:{user.id}  a{author}')
             if str(user.id) == str(author): self._raid_delete(message_id)
             return
