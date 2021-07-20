@@ -172,9 +172,9 @@ class Bnsraid(commands.Cog):
 
     async def _raid_delete(self, message_id: str):
         async with self.config.raids() as raids:
-            del raids[message_id]
             channel = self.bot.get_channel(int(raids[message_id]['msg'][0]))
             message = await channel.fetch_message(raids[message_id]['msg'][1])
+            del raids[message_id]
             try:
                 await message.delete()
             except Exception:
