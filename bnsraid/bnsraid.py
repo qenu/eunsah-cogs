@@ -89,7 +89,7 @@ class Bnsraid(commands.Cog):
         # await ctx.message.delete() # used to remove the command message
 
 
-        content = content.split('\n')
+        content = content.split('|')
         title = content[0]
         description = ''
 
@@ -97,7 +97,7 @@ class Bnsraid(commands.Cog):
         await message.add_reaction(await self.config.emote())
 
         try:
-            description += '\n'.join(content[1:])
+            description += ''.join(content[1:])
         except IndexError:
             pass
 
