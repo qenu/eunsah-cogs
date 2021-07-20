@@ -199,7 +199,7 @@ class Bnsraid(commands.Cog):
         except Exception:
             pass
 
-    @commands.group(name='devbnsraid')
+    @commands.group(name='devraid')
     @checks.admin_or_permissions()
     async def commands_devraid(self, ctx: commands.Context):
         pass
@@ -215,7 +215,7 @@ class Bnsraid(commands.Cog):
         message_list = await self.config.raids()
         message_list = list(message_list.keys())
         if message_id in message_list:
-            await self._raid_delete(message_id)
+            await self._raid_delete(str(message_id))
             await ctx.tick()
 
     @commands_devraid.command(name='remall')
@@ -223,6 +223,6 @@ class Bnsraid(commands.Cog):
         message_list = await self.config.raids()
         message_list = list(message_list.keys())
         for message_id in message_list:
-            await self._raid_delete(message_id)
+            await self._raid_delete(str(message_id))
         await ctx.tick()
 
