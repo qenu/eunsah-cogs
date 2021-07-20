@@ -113,9 +113,8 @@ class Bnsraid(commands.Cog):
                             'value' : '-'
                         }
                     ],
-                    'footer' : {'text' : 'id: ' + str(message.id)},
-                    'author' : {'name' : '發起人: ' + str(ctx.author.display_name)}
-                },
+                    'footer' : {'text' : 'id: {} | 發起人: {} '.format(str(message.id), str(ctx.author.display_name))}
+                    },
                 'signups' : {},
                 'time' : time()
             }
