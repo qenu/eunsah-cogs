@@ -86,8 +86,7 @@ class Bnsraid(commands.Cog):
             使用方式：[p]raid <副本名稱 | 其他描述>
             範例：[p]raid 4/20 破天 | 拓荒團 武器要求弒花9段 所有物品競標
         '''
-        # await ctx.message.delete() # used to remove the command message
-
+        await ctx.message.delete() # used to remove the command message
 
         content = content.split('|')
         title = content[0]
