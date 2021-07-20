@@ -92,7 +92,7 @@ class Bnsraid(commands.Cog):
         title = content[0]
         description = ''
 
-        message = await ctx.send(f'由{ctx.author.display_name}發起')
+        message = await ctx.send(embed = discord.Embed.from_dict({}))
         await message.add_reaction(await self.config.emote())
 
         try:
@@ -113,7 +113,8 @@ class Bnsraid(commands.Cog):
                             'value' : '-'
                         }
                     ],
-                    'footer' : {'text' : 'id: '+str(message.id)}
+                    'footer' : {'text' : 'id: ' + str(message.id)},
+                    'author' : {'name' : '發起人: ' + str(ctx.author.display_name)}
                 },
                 'signups' : {},
                 'time' : time()
@@ -219,6 +220,7 @@ class Bnsraid(commands.Cog):
             await ctx.tick()
 
     @commands_devraid.command(name='remall')
+    @checks.is_owner()
     async def devbnsraid_remall(self, ctx: commands.Context):
         message_list = await self.config.raids()
         message_list = list(message_list.keys())
