@@ -113,7 +113,8 @@ class Bnsraid(commands.Cog):
                             'name' : '參加人員：0',
                             'value' : '-'
                         }
-                    ]
+                    ],
+                    'footer' : 'id: '+str(message.id)
                 },
                 'signups' : {},
                 'time' : time()
@@ -199,7 +200,7 @@ class Bnsraid(commands.Cog):
         except Exception:
             pass
 
-    @commands.group(name='devraid')
+    @commands.group(name='devraid', aliases=['dr'])
     @checks.admin_or_permissions()
     async def commands_devraid(self, ctx: commands.Context):
         pass
@@ -210,7 +211,7 @@ class Bnsraid(commands.Cog):
         async with self.config.raids() as raids:
             await ctx.send(raids)
 
-    @commands_devraid.command(name='remove')
+    @commands_devraid.command(name='remove', aliases=['rm'])
     async def devbnsraid_remove(self, ctx: commands.Context, message_id: str):
         message_list = await self.config.raids()
         message_list = list(message_list.keys())
