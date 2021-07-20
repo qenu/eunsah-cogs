@@ -1,0 +1,15 @@
+{
+    "name": "bnsraid",
+    "short": "bnsraid",
+    "description": "sign up sheet for raid in bns",
+    "end_user_data_statement": "this cog doesn't not store any user data",
+    "install_msg": "thanks for installing bns raid, hope you find this cog useful",
+    "author": "qenu",
+    "required_cogs": {},
+    "requirements": [],
+    "tags": "util",
+    "min_bot_version": "3.3.10",
+    "hidden": false,
+    "disabled": false,
+    "type": "COG"
+}

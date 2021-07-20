@@ -1,0 +1,25 @@
+{
+    "author" : [
+        "ba",
+	"PaddoInWonderland"
+    ],
+    "bot_version" : [
+        3,
+        0,
+        0
+    ],
+    "description" : "Kill from Paddo",
+    "disabled" : false,
+    "hidden" : false,
+    "install_msg" : "Usage: `[p]kill <user>`",
+    
+    "name" : "Kill",
+    "permissions" : [],
+    "required_cogs" : {},
+    "requirements" : [],
+    "short" : "kills a user",
+    "tags" : [
+        "fun"
+    ],
+    "type" : "COG"
+}
