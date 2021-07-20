@@ -163,7 +163,10 @@ class Bnsraid(commands.Cog):
             if len(username) != 0:
                 username = '\n'.join([str(name) for name in username])
                 raids[message_id]['embed']['fields'][0]['value'] = username
-                raids[message_id]['embed']['fields'][0]['name'] = '參加人員：' + str(len(username))
+            else:
+                raids[message_id]['embed']['fields'][0]['value'] = '-'
+            raids[message_id]['embed']['fields'][0]['name'] = '參加人員：' + str(len(username))
+
             embed = discord.Embed.from_dict(raids[message_id]['embed'])
             await message.edit(embed = embed)
 
@@ -222,4 +225,4 @@ class Bnsraid(commands.Cog):
         for message_id in message_list:
             await self._raid_delete(message_id)
         await ctx.tick()
- 
+
