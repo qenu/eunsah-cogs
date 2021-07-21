@@ -124,39 +124,39 @@ class Bnsraid(commands.Cog):
         await self._embed_updater(message_id=str(message.id))
 
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
-        message_id = str(reaction.message.id)
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+        message_id = str(payload.message_id)
         raid = await self.config.raids()
         author = raid[message_id]['msg'][2]
         message_list = list(raid.keys())
         if message_id not in message_list: return
-        if user.id == self.bot.user.id: return
+        if payload.user_id == self.bot.user.id: return
 
-        if reaction.emoji == await self.config.cancel():
-            if str(user.id) == str(author) or self.bot.is_owner(user) or user.guild_permissions.manage_roles:
+        if payload.emoji == await self.config.cancel():
+            if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member) or payload.member.guild_permissions.manage_roles:
                 await self._raid_delete(message_id)
                 return
 
-        if reaction.emoji == await self.config.emote():
+        if payload.emoji == await self.config.emote():
             async with self.config.raids() as raids:
-                raids[message_id]['signups'][str(user.id)] = str(user.display_name)
+                raids[message_id]['signups'][str(payload.user_id)] = str(payload.member.display_name)
             await self._embed_updater(message_id=message_id)
             return
 
     @commands.Cog.listener()
-    async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User):
-        message_id = str(reaction.message.id)
+    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
+        message_id = str(payload.message_id)
         raid = await self.config.raids()
         message_list = list(raid.keys())
         if message_id not in message_list: return
-        if user.id == self.bot.user.id: return
+        if payload.user_id == self.bot.user.id: return
 
         emote = await self.config.emote()
 
-        if reaction.emoji == emote:
+        if payload.emoji == emote:
             async with self.config.raids() as raids:
                 try:
-                    del raids[message_id]['signups'][str(user.id)]
+                    del raids[message_id]['signups'][str(payload.user_id)]
                 except Exception:
                     pass
         await self._embed_updater(message_id=message_id)
