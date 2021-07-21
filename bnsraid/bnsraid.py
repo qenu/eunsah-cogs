@@ -132,14 +132,17 @@ class Bnsraid(commands.Cog):
         if message_id not in message_list: return
         if user.id == self.bot.user.id: return
 
+        if reaction.emoji == await self.config.cancel():
+            if str(user.id) == str(author):
+                await self._raid_delete(message_id)
+                return
+
         if reaction.emoji == await self.config.emote():
             async with self.config.raids() as raids:
                 raids[message_id]['signups'][str(user.id)] = str(user.display_name)
             await self._embed_updater(message_id=message_id)
-            
-        if reaction.emoji == await self.config.cancel():
-            if str(user.id) == str(author): await self._raid_delete(message_id)
-        
+
+
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User):
