@@ -217,7 +217,7 @@ class Bnsraid(commands.Cog):
         async with self.config.raids() as raids:
             line = ''
             for raid in raids:
-                line += '\n' + str(raid) + raids[raid]['embed']['title']
+                line += '\n' + raids[raid]['embed']['title'] + ' - ' + str(raid)
             await ctx.send(line)
 
 
