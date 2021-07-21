@@ -218,7 +218,10 @@ class Bnsraid(commands.Cog):
             line = ''
             for raid in raids:
                 line += '\n' + raids[raid]['embed']['title'] + ' - ' + str(raid)
-                line += '\n' + raids[raid]['signups']
+                for u in raids[raid]['signups'].values():
+                    line += '\n' + str(u)
+                line += '\n'
+
             await ctx.send(line)
 
 
