@@ -132,12 +132,12 @@ class Bnsraid(commands.Cog):
         if message_id not in message_list: return
         if payload.user_id == self.bot.user.id: return
 
-        if payload.emoji == await self.config.cancel():
+        if payload.emoji.id == await self.config.cancel():
             if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member) or payload.member.guild_permissions.manage_roles:
                 await self._raid_delete(message_id)
                 return
 
-        if payload.emoji == await self.config.emote():
+        if payload.emoji.id == await self.config.emote():
             async with self.config.raids() as raids:
                 raids[message_id]['signups'][str(payload.user_id)] = str(payload.member.display_name)
             await self._embed_updater(message_id=message_id)
@@ -153,7 +153,7 @@ class Bnsraid(commands.Cog):
 
         emote = await self.config.emote()
 
-        if payload.emoji == emote:
+        if payload.emoji.id == emote:
             async with self.config.raids() as raids:
                 try:
                     del raids[message_id]['signups'][str(payload.user_id)]
