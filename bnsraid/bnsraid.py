@@ -141,8 +141,7 @@ class Bnsraid(commands.Cog):
             async with self.config.raids() as raids:
                 raids[message_id]['signups'][str(user.id)] = str(user.display_name)
             await self._embed_updater(message_id=message_id)
-
-
+            return
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User):
@@ -216,7 +215,11 @@ class Bnsraid(commands.Cog):
     @checks.is_owner()
     async def devbnsraid_showall(self, ctx: commands.Context):
         async with self.config.raids() as raids:
-            await ctx.send(raids)
+            line = ''
+            for raid in raids:
+                line += '\n' + str(raid) + raids[raid]['embed']['title']
+            await ctx.send(line)
+
 
     @commands_devraid.command(name='remove', aliases=['rm'])
     async def devbnsraid_remove(self, ctx: commands.Context, message_id: str):
