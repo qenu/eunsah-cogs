@@ -133,7 +133,7 @@ class Bnsraid(commands.Cog):
         if user.id == self.bot.user.id: return
 
         if reaction.emoji == await self.config.cancel():
-            if str(user.id) == str(author):
+            if str(user.id) == str(author) or self.bot.is_owner(user) or user.guild_permissions.manage_roles:
                 await self._raid_delete(message_id)
                 return
 
