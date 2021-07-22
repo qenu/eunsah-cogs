@@ -261,7 +261,7 @@ class Bnsraid(commands.Cog):
             'color' : ctx.author.color.value,
             'fields':[]
         }
-        embed['fields'].append({'name':'攻擊力', 'value':str(j['records']['total_ability']['attack_power_value']), 'inline':1})
+        embed['fields'].append({'name':'攻擊力', 'value':str(j['records']['total_ability']['int_attack_power_value']), 'inline':1})
         embed['fields'].append({'name':'血量', 'value':str(j['records']['total_ability']['int_max_hp']), 'inline':1})
 
         r = requests.get(equip_url.format(bns_charname))
