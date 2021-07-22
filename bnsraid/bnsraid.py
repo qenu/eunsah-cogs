@@ -221,8 +221,8 @@ class Bnsraid(commands.Cog):
                 raids[message_id]['signups'][str(ctx.author.id)] = str(ctx.author.display_name) + ' ' + comment
             except KeyError:
                 await ctx.send('user not in record')
+                return
         await self._embed_updater(message_id=message_id)
-
 
     @commands.group(name='devraid', aliases=['dr'])
     @checks.admin_or_permissions()
@@ -305,8 +305,6 @@ class Bnsraid(commands.Cog):
         singongpae = soup.select('div.accessoryArea')[0].select('div.singongpae')[0].select('div.name')[0].select('span')[0].text
         rune = soup.select('div.accessoryArea')[0].select('div.rune')[0].select('div.name')[0].select('span')[0].text
         clothes = soup.select('div.accessoryArea')[0].select('div.clothes')[0].select('div.name')[0].select('span')[0].text
-
-
 
         line = ''
         line += '武器：' + weapon
