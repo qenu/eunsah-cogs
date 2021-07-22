@@ -2,7 +2,9 @@ from typing import Literal, Optional
 import discord
 from time import time
 import asyncio
-import re
+import requests
+from bs4 import BeautifulSoup as bs4
+import json
 
 
 import discord
@@ -125,12 +127,12 @@ class Bnsraid(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+        if payload.user_id == self.bot.user.id: return
         message_id = str(payload.message_id)
         raid = await self.config.raids()
         author = raid[message_id]['msg'][2]
         message_list = list(raid.keys())
         if message_id not in message_list: return
-        if payload.user_id == self.bot.user.id: return
 
         if payload.emoji.name == await self.config.cancel():
             if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member) or payload.member.guild_permissions.manage_roles:
@@ -141,25 +143,23 @@ class Bnsraid(commands.Cog):
             async with self.config.raids() as raids:
                 raids[message_id]['signups'][str(payload.user_id)] = str(payload.member.display_name)
             await self._embed_updater(message_id=message_id)
-            return
+
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
+        if payload.user_id == self.bot.user.id: return
         message_id = str(payload.message_id)
         raid = await self.config.raids()
         message_list = list(raid.keys())
         if message_id not in message_list: return
-        if payload.user_id == self.bot.user.id: return
 
-        emote = await self.config.emote()
-
-        if payload.emoji.name == emote:
+        if payload.emoji.name == await self.config.emote():
             async with self.config.raids() as raids:
                 try:
                     del raids[message_id]['signups'][str(payload.user_id)]
                 except Exception:
                     pass
-        await self._embed_updater(message_id=message_id)
+            await self._embed_updater(message_id=message_id)
 
     async def _embed_updater(self, message_id: str, message=False):
         async with self.config.raids() as raids:
@@ -241,4 +241,35 @@ class Bnsraid(commands.Cog):
         for message_id in message_list:
             await self._raid_delete(str(message_id))
         await ctx.tick()
+
+    @commands.command(name='bnschar', aliases=['bch'])
+    async def bnschar(self, ctx: commands.Context, bns_charname: str):
+        '''
+            用於查看角色素質，裝備
+            [p]bnschar <角色名稱>
+        '''
+        equip_url = 'http://g.bns.tw.ncsoft.com/ingame/bs/character/data/equipments?c={}'
+        ability_url = 'http://g.bns.tw.ncsoft.com/ingame/bs/character/data/abilities.json?c={}'
+
+        r = requests.get(ability_url.format(bns_charname))
+        j = json.loads(r.text)
+        if j['result'] != 'success':
+            await ctx.send(f'找不到角色! {bns_charname}')
+            return
+        embed = {
+            'color' : ctx.author.color,
+            'description' : bns_charname,
+            'fields':[]
+        }
+        embed['fields'].append({'name':'攻擊力', 'value':j['records']['total_ability']['attack_power_value']})
+
+        r = requests.get(equip_url.format(bns_charname))
+        soup = bs4(r.text)
+        equips = '\n'.join([item.text for item in soup.find_all('span', {'class':'grade_7'})])
+        embed['fields'].append({'name':'裝備', 'value':equips, 'inline': 1})
+        fashion = '\n'.join([item.text for item in soup.find_all('span', {'class':'grade_5'})])
+        embed['fields'].append({'name':'外觀', 'value':fashion, 'inline': 1})
+
+        await ctx.send(embed=discord.Embed.from_dict(embed))
+
 

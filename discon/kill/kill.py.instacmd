@@ -1,8 +1,9 @@
-import discord
-from redbot.core import commands
-from random import choice
-
-kill_para= [
+@commands.command()
+async def kill(ctx, victim: discord.User):
+  ''' kills victim in a random way '''
+  from random import choice
+  user = ctx.author
+  killp= [
         ('{killer} shoves a double barreled shotgun into {victim}\'s mouth and squeezes the trigger of the gun, causing {victim}\'s head to horrifically explode like a ripe pimple, splattering the young person\'s brain matter, gore, and bone fragments all over the walls and painting it a crimson red.'),
         ('Screaming in sheer terror and agony, {victim} is horrifically dragged into the darkness by unseen forces, leaving nothing but bloody fingernails and a trail of scratch marks in the ground from which the young person had attempted to halt the dragging process.'),
         ('{killer} takes a machette and starts hacking away on {victim}, chopping {victim} into dozens of pieces.'),
@@ -14,27 +15,10 @@ kill_para= [
         ('{victim} steps on a land mine and is horrifically blown to multiple pieces as the device explodes, the {victim}\'s entrails and gore flying up and splattering all around as if someone had thrown a watermelon onto the ground from the top of a multiple story building.'),
         ('{victim} is killed instantly as the top half of his head is blown off by a Red Army sniper armed with a Mosin Nagant, {victim}\'s brains splattering everywhere in a horrific fashion.'),
         ]
-
-
-class Kill(commands.Cog):
-
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command()
-    async def kill(self, ctx, victim: discord.Member):
-        """
-            Kills the mentioned victim
-            
-        """
-        user = ctx.message.author
-
-        if victim.id == self.bot.user.id:
-            await ctx.send("I refuse to kill myself!")
-            
-        elif victim.id == user.id:            
-            #await ctx.send("I won\'t let you kill yourself!")
-            await ctx.send(choice(kill_para).format(victim = user.display_name, killer = self.bot.user.display_name))
-
-        else:
-            await ctx.send(choice(kill_para).format(victim = victim.display_name, killer = user.display_name))
+  if victim.id == bot.user.id:  
+    await ctx.send('nice try, but i refuse to die')
+  elif victim.id == user.id:
+    await ctx.send(choice(killp).format(victim=user.display_name, killer=bot.user.display_name))
+  else:
+    await ctx.send(choice(killp).format(victim=victim.display_name, killer=user.display_name))
+return kill

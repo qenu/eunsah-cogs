@@ -6,7 +6,7 @@
     "install_msg": "thanks for installing bns raid, hope you find this cog useful",
     "author": "qenu",
     "required_cogs": {},
-    "requirements": [],
+    "requirements": ["beautifulsoup4", "requests", "json"],
     "tags": "util",
     "min_bot_version": "3.3.10",
     "hidden": false,
