@@ -262,6 +262,7 @@ class Bnsraid(commands.Cog):
             'fields':[]
         }
         embed['fields'].append({'name':'攻擊力', 'value':str(j['records']['total_ability']['attack_power_value'])})
+        embed['fields'].append({'name':'血量', 'value':str(j['records']['total_ability']['int_max_hp'])})
 
         r = requests.get(equip_url.format(bns_charname))
         soup = bs4(r.text)
