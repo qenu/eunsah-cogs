@@ -252,10 +252,11 @@ class Bnsraid(commands.Cog):
         ability_url = 'http://g.bns.tw.ncsoft.com/ingame/bs/character/data/abilities.json?c={}'
 
         try: 
-            r = requests.get(ability_url.format(bns_charname))
+            with requests.get(ability_url.format(bns_charname)) as r:
+                j = json.loads(r.text)
         except Exception:
             await ctx.send('伺服器連接中斷')
-        j = json.loads(r.text)
+
         if j['result'] != 'success':
             await ctx.send(f'找不到角色! {bns_charname}')
             return
@@ -268,10 +269,11 @@ class Bnsraid(commands.Cog):
         embed['fields'].append({'name':'血量', 'value':str(j['records']['total_ability']['int_max_hp']), 'inline':1})
 
         try:
-            r = requests.get(equip_url.format(bns_charname))
+            with requests.get(equip_url.format(bns_charname)) as r:
+                soup = bs4(r.text)
         except Exception:
             await ctx.send('伺服器連接中斷')
-        soup = bs4(r.text)
+
         weapon = soup.select('div.wrapWeapon')[0].select('div.name')[0].select('span')[0].text
         ring = soup.select('div.accessoryArea')[0].select('div.ring')[0].select('div.name')[0].select('span')[0].text
         earring = soup.select('div.accessoryArea')[0].select('div.earring')[0].select('div.name')[0].select('span')[0].text
