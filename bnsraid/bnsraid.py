@@ -257,6 +257,7 @@ class Bnsraid(commands.Cog):
             await ctx.send(f'找不到角色! {bns_charname}')
             return
         embed = {
+            'title' : bns_charname,
             'color' : ctx.author.color.value,
             'fields':[]
         }
@@ -282,8 +283,6 @@ class Bnsraid(commands.Cog):
 
 
         line = ''
-        line += '角色名稱：' + bns_charname
-        line += '\n'
         line += '武器：' + weapon
         line += '\n'
         line += '戒指：' + ring
