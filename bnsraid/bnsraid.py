@@ -258,17 +258,64 @@ class Bnsraid(commands.Cog):
             return
         embed = {
             'color' : ctx.author.color.value,
-            'description' : bns_charname,
             'fields':[]
         }
         embed['fields'].append({'name':'攻擊力', 'value':str(j['records']['total_ability']['attack_power_value'])})
 
         r = requests.get(equip_url.format(bns_charname))
         soup = bs4(r.text)
-        equips = '\n'.join([item.text for item in soup.find_all('span', {'class':'grade_7'})])
-        embed['fields'].append({'name':'裝備', 'value':equips, 'inline': 1})
-        fashion = '\n'.join([item.text for item in soup.find_all('span', {'class':'grade_5'})])
-        embed['fields'].append({'name':'外觀', 'value':fashion, 'inline': 1})
+        weapon = soup.select('div.wrapWeapon')[0].select('div.name')[0].select('span')[0].text
+        ring = soup.select('div.accessoryArea')[0].select('div.ring')[0].select('div.name')[0].select('span')[0].text
+        earring = soup.select('div.accessoryArea')[0].select('div.earring')[0].select('div.name')[0].select('span')[0].text
+        necklace = soup.select('div.accessoryArea')[0].select('div.necklace')[0].select('div.name')[0].select('span')[0].text
+        bracelet =soup.select('div.accessoryArea')[0].select('div.bracelet')[0].select('div.name')[0].select('span')[0].text
+        belt = soup.select('div.accessoryArea')[0].select('div.belt')[0].select('div.name')[0].select('span')[0].text
+        gloves = soup.select('div.accessoryArea')[0].select('div.gloves')[0].select('div.name')[0].select('span')[0].text
+        soul = soup.select('div.accessoryArea')[0].select('div.soul')[0].select('div.name')[0].select('span')[0].text
+        soul_2 = soup.select('div.accessoryArea')[0].select('div.soul-2')[0].select('div.name')[0].select('span')[0].text
+        guard = soup.select('div.accessoryArea')[0].select('div.guard')[0].select('div.name')[0].select('span')[0].text
+        nova = soup.select('div.accessoryArea')[0].select('div.nova')[0].select('div.name')[0].select('span')[0].text
+        singongpae = soup.select('div.accessoryArea')[0].select('div.singongpae')[0].select('div.name')[0].select('span')[0].text
+        rune = soup.select('div.accessoryArea')[0].select('div.rune')[0].select('div.name')[0].select('span')[0].text
+        clothes = soup.select('div.accessoryArea')[0].select('div.clothes')[0].select('div.name')[0].select('span')[0].text
+
+
+
+        line = ''
+        line += '角色名稱：' + bns_charname
+        line += '\n'
+        line += '武器：' + ring
+        line += '\n'
+        line += '戒指：' + earring
+        line += '\n'
+        line += '耳環：' + necklace
+        line += '\n'
+        line += '項鍊：' + bracelet
+        line += '\n'
+        line += '手鐲：' + belt
+        line += '\n'
+        line += '腰帶：' + gloves
+        line += '\n'
+        line += '手套：' + weapon
+        line += '\n'
+        line += '魂：' + soul
+        line += '\n'
+        line += '靈：' + soul_2
+        line += '\n'
+        line += '守護石：' + guard
+        line += '\n'
+        line += '星：' + nova
+        line += '\n'
+        line += '神功牌：' + singongpae
+        line += '\n'
+        line += '秘公牌：' + rune
+        line += '\n'
+        line += '衣服：' + clothes
+        line += '\n'
+
+        embed['description'] = line
+
+
 
         await ctx.send(embed=discord.Embed.from_dict(embed))
 
