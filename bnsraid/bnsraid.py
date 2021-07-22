@@ -214,6 +214,7 @@ class Bnsraid(commands.Cog):
             於報名後加上註解，空白可以移除註解
             [p]rcomment <id> <comment>
         '''
+        await ctx.message.delete()
         if comment is None: comment = ''
         async with self.config.raids() as raids:
             try:
