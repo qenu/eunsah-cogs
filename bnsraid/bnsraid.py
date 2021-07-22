@@ -1,3 +1,4 @@
+from os import MFD_ALLOW_SEALING
 from typing import Literal, Optional
 import discord
 from time import time
@@ -144,7 +145,6 @@ class Bnsraid(commands.Cog):
                 raids[message_id]['signups'][str(payload.user_id)] = str(payload.member.display_name)
             await self._embed_updater(message_id=message_id)
 
-
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
         if payload.user_id == self.bot.user.id: return
@@ -206,6 +206,23 @@ class Bnsraid(commands.Cog):
         except Exception:
             pass
 
+    @commands.guild_only()
+    @commands.command(name='rcomment', aliases=['rc'])
+    @commands.bot_has_permissions(manage_messages=True)
+    async def raid_comment(self, ctx: commands.Context, message_id: str, comment: Optional[str]):
+        '''
+            於報名後加上註解，空白可以移除註解
+            [p]rcomment <id> <comment>
+        '''
+        if comment is None: comment = ''
+        async with self.config.raids() as raids:
+            try:
+                raids[message_id]['signups'][str(ctx.author.id)] = str(ctx.author.display_name) + ' ' + comment
+            except KeyError:
+                await ctx.send('user not in record')
+        await self._embed_updater(message_id=message_id)
+
+
     @commands.group(name='devraid', aliases=['dr'])
     @checks.admin_or_permissions()
     async def commands_devraid(self, ctx: commands.Context):
@@ -223,7 +240,6 @@ class Bnsraid(commands.Cog):
                 line += '\n'
 
             await ctx.send(line)
-
 
     @commands_devraid.command(name='remove', aliases=['rm'])
     async def devbnsraid_remove(self, ctx: commands.Context, message_id: str):
