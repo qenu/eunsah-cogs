@@ -136,7 +136,7 @@ class Bnsraid(commands.Cog):
         if message_id not in message_list: return
 
         if payload.emoji.name == await self.config.cancel():
-            if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member) or payload.member.guild_permissions.manage_roles:
+            if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member):
                 await self._raid_delete(message_id)
                 return
 
