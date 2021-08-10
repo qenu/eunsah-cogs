@@ -360,6 +360,7 @@ class Maplexp(commands.Cog):
         await ctx.send_help()
         return
 
+    @commands.command(name='maplexpimage', aliases=['xpi'])
 
     @commands.group(name='maple', aliases=['m'])
     @commands.bot_has_permissions(add_reactions=True, embed_links=True)
@@ -686,7 +687,7 @@ class Maplexp(commands.Cog):
 
     @commands.command(name='OCRtest')
     @checks.is_owner()
-    async def OCRtest(self, ctx: commands.Context, link:str):
+    async def OCRtest(self, ctx: commands.Context, link: Optional[str]):
         try:
             if link is None:
                 try:
