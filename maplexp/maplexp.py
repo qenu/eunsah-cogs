@@ -380,16 +380,13 @@ class Maplexp(commands.Cog):
             texts = response.text_annotations
             text = texts[0].description.replace('\n', '').replace('.', '')
 
-            exp = int(text)
-
             await hold.delete()
-            await ctx.send(f'Value detected :{text}')
         except Exception as err:
             await hold.delete()
             await ctx.send(f'Error occured! {err}')
             return
 
-        await self._update(ctx, level=level, exp=exp)
+        await self._update(ctx, level=level, exp=text)
         return
 
 
