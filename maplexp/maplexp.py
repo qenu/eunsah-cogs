@@ -360,7 +360,38 @@ class Maplexp(commands.Cog):
         await ctx.send_help()
         return
 
-    # @commands.command(name='maplexpimage', aliases=['xpi'])
+    @commands.command(name='maplexpimage', aliases=['xpi'])
+    async def maplexpimage(self, ctx: commands.Context, level: str, link: Optional[str]):
+        '''
+        update xp with image
+        '''
+        hold = await ctx.send('處理中...')
+        try:
+            if link is None:
+                try:
+                    link = ctx.message.attachments[0].url
+                except:
+                    link = None
+            from google.cloud import vision
+            client = vision.ImageAnnotatorClient()
+            response = client.annotate_image(
+                {'image' : {'source' : {'image_uri' : link}},}
+            )
+            texts = response.text_annotations
+            text = texts[0].description.replace('\n', '').replace('.', '')
+
+            exp = int(text)
+
+            await hold.delete()
+            await ctx.send(f'Value detected :{text}')
+        except Exception as err:
+            await hold.delete()
+            await ctx.send(f'Error occured! {err}')
+            return
+
+        await self._update(ctx, level=level, exp=exp)
+        return
+
 
     @commands.group(name='maple', aliases=['m'])
     @commands.bot_has_permissions(add_reactions=True, embed_links=True)
@@ -705,8 +736,6 @@ class Maplexp(commands.Cog):
             await ctx.send(f'Value detected :{text}')
         except Exception:
             await ctx.send('Error occured!')
-
-
 
     @commands_maple.group(name='reset')
     async def maple_reset(self, ctx):
