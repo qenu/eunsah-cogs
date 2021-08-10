@@ -21,6 +21,7 @@ up_arrow = '↑'
 down_arrow = '↓'
 flat_arrow = '-'
 time_string_format = '%Y/%m/%d'
+GOOGLE_APPLICATION_CREDENTIALS = r""
 
 class Maplexp(commands.Cog):
     '''
@@ -671,6 +672,41 @@ class Maplexp(commands.Cog):
 
         await ctx.tick()
 
+    @maple_set.command(name='OCR')
+    @checks.is_owner()
+    async def maple_set_OCR(self, ctx: commands.Context, path: Optional[str]):
+        if path:
+            GOOGLE_APPLICATION_CREDENTIALS = path
+            await ctx.send(f'set OCR file path to {path}')
+        else:
+            GOOGLE_APPLICATION_CREDENTIALS = ''
+            await ctx.send(f'removed path for OCR')
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= GOOGLE_APPLICATION_CREDENTIALS
+
+
+    @commands.command(name='OCRtest')
+    @checks.is_owner()
+    async def OCRtest(self, ctx: commands.Context, link:str):
+        try:
+            if link is None:
+                try:
+                    link = ctx.message.attachments[0].url
+                except:
+                    link = None
+            from google.cloud import vision
+            client = vision.ImageAnnotatorClient()
+            response = client.annotate_image(
+                {'image' : {'source' : {'image_uri' : link}},}
+            )
+            texts = response.text_annotations
+            text = texts[0].description.replace('\n', '').replace('.', '')
+
+            await ctx.send(f'Value detected {text}')
+        except Exception:
+            await ctx.send('Error occured!')
+
+
+
     @commands_maple.group(name='reset')
     async def maple_reset(self, ctx):
         '''
@@ -834,7 +870,7 @@ class Maplexp(commands.Cog):
             await ctx.send(f'使用者列表：{[id.name for id in id_list]}')
             result = await ctx.send(f'隨機抽：{random.choice(id_list)}')
 
-    @commands.command(name='xpraffle')
+    @commands.command(name='xpraffle', hidden=True)
     @checks.admin_or_permissions(administrator=True)
     async def maple_raffle(
         self,
@@ -875,7 +911,6 @@ class Maplexp(commands.Cog):
             await asyncio.sleep(int(n/rand)+1)
 
         await result.edit(content='```'+win_res+'```')
-
 
     @commands.command(name='fuckmylife', hidden=True)
     @checks.is_owner()

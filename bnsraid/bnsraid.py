@@ -1,4 +1,3 @@
-from os import MFD_ALLOW_SEALING
 from typing import Literal, Optional
 import discord
 from time import time
@@ -14,37 +13,6 @@ from redbot.core.bot import Red
 from redbot.core.config import Config
 
 RequestType = Literal["discord_deleted_user", "owner", "user", "user_strict"]
-
-# correct
-'''
-http://g.bns.tw.ncsoft.com/ingame/api/training/characters/<CHARATER_NAME>/stat.json
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/data/equipments?c=<CHARATER_NAME>
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/data/abilities.json?c=<CHARATER_NAME>
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/profile?c=<CHARATER_NAME>
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/search/info?c=<CHARATER_NAME>
-
----
-# 析唄
-http://g.bns.tw.ncsoft.com/ingame/api/training/characters/析唄/stat.json
-# returns json, current page, total page, and skill points
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/data/equipments?c=析唄
-# returns html of character info | weapon, gems, repair, all acc and names, clothes
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/data/abilities.json?c=析唄
-# returns huge json
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/profile?c=析唄
-# returns f2
-
-http://g.bns.tw.ncsoft.com/ingame/bs/character/search/info?c=析唄
-# character search UI
-
-'''
 
 class Bnsraid(commands.Cog):
     '''
@@ -136,7 +104,7 @@ class Bnsraid(commands.Cog):
         if message_id not in message_list: return
 
         if payload.emoji.name == await self.config.cancel():
-            if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member) or payload.member.guild_permissions.manage_roles:
+            if str(payload.user_id) == str(author) or await self.is_mod_or_admin(payload.user_id):
                 await self._raid_delete(message_id)
                 return
 
@@ -164,9 +132,9 @@ class Bnsraid(commands.Cog):
     async def _embed_updater(self, message_id: str, message=False):
         async with self.config.raids() as raids:
             channel = self.bot.get_channel(raids[message_id]['msg'][0])
-            message = await channel.fetch_message(raids[message_id]['msg'][1])
-
+            if channel is not None: message = await channel.fetch_message(raids[message_id]['msg'][1])
             username = raids[message_id]['signups'].values()
+
             if len(username) != 0:
                 name = '\n'.join([str(name) for name in username])
                 raids[message_id]['embed']['fields'][0]['value'] = name
@@ -180,9 +148,10 @@ class Bnsraid(commands.Cog):
     async def _raid_delete(self, message_id: str):
         async with self.config.raids() as raids:
             channel = self.bot.get_channel(int(raids[message_id]['msg'][0]))
-            message = await channel.fetch_message(raids[message_id]['msg'][1])
-            del raids[message_id]
+            if channel is not None: message = await channel.fetch_message(raids[message_id]['msg'][1])
+
             try:
+                del raids[message_id]
                 await message.delete()
             except Exception:
                 pass
@@ -268,7 +237,7 @@ class Bnsraid(commands.Cog):
         equip_url = 'http://g.bns.tw.ncsoft.com/ingame/bs/character/data/equipments?c={}'
         ability_url = 'http://g.bns.tw.ncsoft.com/ingame/bs/character/data/abilities.json?c={}'
 
-        try: 
+        try:
             with requests.get(ability_url.format(bns_charname)) as r:
                 j = json.loads(r.text)
         except Exception:
@@ -339,5 +308,33 @@ class Bnsraid(commands.Cog):
         embed['description'] = line
 
         await ctx.send(embed=discord.Embed.from_dict(embed))
+        # correct
+        '''
+        http://g.bns.tw.ncsoft.com/ingame/api/training/characters/<CHARATER_NAME>/stat.json
 
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/data/equipments?c=<CHARATER_NAME>
 
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/data/abilities.json?c=<CHARATER_NAME>
+
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/profile?c=<CHARATER_NAME>
+
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/search/info?c=<CHARATER_NAME>
+
+        ---
+        # 析唄
+        http://g.bns.tw.ncsoft.com/ingame/api/training/characters/析唄/stat.json
+        # returns json, current page, total page, and skill points
+
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/data/equipments?c=析唄
+        # returns html of character info | weapon, gems, repair, all acc and names, clothes
+
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/data/abilities.json?c=析唄
+        # returns huge json
+
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/profile?c=析唄
+        # returns f2
+
+        http://g.bns.tw.ncsoft.com/ingame/bs/character/search/info?c=析唄
+        # character search UI
+
+        '''
