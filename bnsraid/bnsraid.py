@@ -104,11 +104,7 @@ class Bnsraid(commands.Cog):
         if message_id not in message_list: return
 
         if payload.emoji.name == await self.config.cancel():
-<<<<<<< HEAD
-            if str(payload.user_id) == str(author) or await self.is_mod_or_admin(payload.user_id):
-=======
             if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member):
->>>>>>> 8939f85b2cb9fff5430a5785ba72af075b7b4c2c
                 await self._raid_delete(message_id)
                 return
 
