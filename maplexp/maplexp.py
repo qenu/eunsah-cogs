@@ -360,7 +360,7 @@ class Maplexp(commands.Cog):
         await ctx.send_help()
         return
 
-    @commands.command(name='maplexpimage', aliases=['xpi'])
+    # @commands.command(name='maplexpimage', aliases=['xpi'])
 
     @commands.group(name='maple', aliases=['m'])
     @commands.bot_has_permissions(add_reactions=True, embed_links=True)
@@ -702,7 +702,7 @@ class Maplexp(commands.Cog):
             texts = response.text_annotations
             text = texts[0].description.replace('\n', '').replace('.', '')
 
-            await ctx.send(f'Value detected {text}')
+            await ctx.send(f'Value detected :{text}')
         except Exception:
             await ctx.send('Error occured!')
 
