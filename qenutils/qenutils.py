@@ -32,7 +32,7 @@ class Qenutils(commands.Cog):
 
         GOOGLE_APPLICATION_CREDENTIALS = await self.bot.get_shared_api_tokens("google_application_credentials")
         if GOOGLE_APPLICATION_CREDENTIALS.get("path") is None:
-            return await ctx.send("The Service Account file path has not been set. See `[p]ocrset path`")
+            return await ctx.send("The Service Account file path has not been set. See `[p]ocrset`")
 
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= GOOGLE_APPLICATION_CREDENTIALS
 
@@ -57,10 +57,18 @@ class Qenutils(commands.Cog):
     @commands.group(name='ocrset')
     @commands.is_owner()
     async def ocrsettings(self, ctx: commands.Context):
+        '''
+            Settings page for using Google Ocr
+        '''
         pass
 
     @ocrsettings.command(name='path')
     async def ocrset_path(self, ctx: commands.Context, path: Optional[str] = None):
+        '''
+            Enter the path to set path to google service account file
+            Usage: [p]ocrset path <path_to_file>
+            Leave blank to remove path.
+        '''
         if path:
             await ctx.bot.set_shared_api_tokens("google_application_credentials", path=path)
             await ctx.send(f'service account file path set.')
