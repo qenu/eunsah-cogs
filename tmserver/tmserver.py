@@ -523,18 +523,18 @@ class Tmserver(commands.Cog):
             await ctx.send(f'{ctx.author.mention}該頻道的延遲炸了：{latency}')
 
 
-    @commands.command(name='tcping')
-    @checks.admin_or_permissions(administrator=True)
-    async def tcping(self, ctx: commands.Context, host: str, port: int=443):
-        '''
-            [p]tcping <host> [port]
-        '''
-        latency = self.latency_point(host=host, port=port, offset=True)
-        await ctx.tick()
-        if latency is None:
-            await ctx.send(f'{host} connection timed out!')
-            return
-        await ctx.send(f'{host} responded with {latency:.2f}ms latency.')
+    # @commands.command(name='tcping')
+    # @checks.admin_or_permissions(administrator=True)
+    # async def tcping(self, ctx: commands.Context, host: str, port: int=443):
+    #     '''
+    #         [p]tcping <host> [port]
+    #     '''
+    #     latency = self.latency_point(host=host, port=port, offset=True)
+    #     await ctx.tick()
+    #     if latency is None:
+    #         await ctx.send(f'{host} connection timed out!')
+    #         return
+    #     await ctx.send(f'{host} responded with {latency:.2f}ms latency.')
 
 
     @commands.command(name='msginfo')
