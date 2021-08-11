@@ -65,20 +65,27 @@ class Qenutils(commands.Cog):
     async def ocrsettings(self, ctx: commands.Context):
         '''
             Settings page for using Google Ocr
+            [p]ocrset path <path_to_file>
+            Set the path to your Google Service Account json to start using OCR
+
+            If you're uncertain, follow the guide below
+            https://cloud.google.com/vision/docs/quickstart-client-libraries#before-you-begin
+
+
         '''
         pass
 
     @ocrsettings.command(name='path')
     async def ocrset_path(self, ctx: commands.Context, path: Optional[str] = None):
         '''
-            Enter the path to set path to google service account file
-            Usage: [p]ocrset path <path_to_file>
-            Leave blank to remove path.
+            Sets the path to google service account file
+            `[p]ocrset path <path_to_file>` to set path
+            Leave blank to remove path
         '''
         if path:
             await ctx.bot.set_shared_api_tokens("google_application_credentials", path=path)
             await ctx.send(f'service account file path set.')
         else:
             await ctx.bot.remove_shared_api_tokens("google_application_credentials", "path")
-            await ctx.send(f'Removed path of service account file.')
+            await ctx.send(f'Removed path of service account file. `[p]ocrset path <path_to_file>` to set path')
 
