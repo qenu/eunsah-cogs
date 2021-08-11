@@ -58,7 +58,7 @@ class Qenutils(commands.Cog):
             text = texts[0].description
 
             await hold.delete()
-            await ctx.send(f'Text detected :{text}')
+            await ctx.send(f'Text detected :\n{text}')
         except Exception as err:
             await ctx.send(f'Error occured! {err}')
 
