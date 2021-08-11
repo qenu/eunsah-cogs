@@ -29,13 +29,18 @@ class Qenutils(commands.Cog):
     @commands.command(name='ocr')
     @commands.admin_or_permissions(manage_roles=True)
     async def ocr(self, ctx: commands.Context, link: Optional[str]):
-
+        '''
+            Optical Character Recognition (OCR) using Google Cloud | Cloud Vision API
+            [p]ocr <image link>
+            You can use a link to image, or just append the image with message
+        '''
         GOOGLE_APPLICATION_CREDENTIALS = await self.bot.get_shared_api_tokens("google_application_credentials")
         if GOOGLE_APPLICATION_CREDENTIALS.get("path") is None:
             return await ctx.send("The Service Account file path has not been set. See `[p]ocrset`")
 
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= GOOGLE_APPLICATION_CREDENTIALS
 
+        hold = await ctx.send('Connecting to Google Cloud Vision API...')
         try:
             if link is None:
                 try:
@@ -50,7 +55,8 @@ class Qenutils(commands.Cog):
             texts = response.text_annotations
             text = texts[0].description
 
-            await ctx.send(f'Value detected :{text}')
+            await hold.delete()
+            await ctx.send(f'Text detected :{text}')
         except Exception as err:
             await ctx.send(f'Error occured! {err}')
 
