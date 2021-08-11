@@ -31,14 +31,14 @@ class Qenutils(commands.Cog):
     async def ocr(self, ctx: commands.Context, link: Optional[str]):
         '''
             Optical Character Recognition (OCR) using Google Cloud | Cloud Vision API
-            [p]ocr <image link>
-            You can use a link to image, or just append the image with message
+            [p]ocr <image_link>
+            You can use a link to image, or just attach the image with the message
         '''
         GOOGLE_APPLICATION_CREDENTIALS = await self.bot.get_shared_api_tokens("google_application_credentials")
         if GOOGLE_APPLICATION_CREDENTIALS.get("path") is None:
             return await ctx.send("The Service Account file path has not been set. See `[p]ocrset`")
 
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= GOOGLE_APPLICATION_CREDENTIALS
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= GOOGLE_APPLICATION_CREDENTIALS['path']
 
         hold = await ctx.send('Connecting to Google Cloud Vision API...')
         try:
@@ -46,7 +46,8 @@ class Qenutils(commands.Cog):
                 try:
                     link = ctx.message.attachments[0].url
                 except:
-                    link = None
+                    await ctx.send_help()
+                    return
             from google.cloud import vision
             client = vision.ImageAnnotatorClient()
             response = client.annotate_image(
@@ -84,7 +85,7 @@ class Qenutils(commands.Cog):
         '''
         if path:
             await ctx.bot.set_shared_api_tokens("google_application_credentials", path=path)
-            await ctx.send(f'service account file path set.')
+            await ctx.send(f'Service account file path set.')
         else:
             await ctx.bot.remove_shared_api_tokens("google_application_credentials", "path")
             await ctx.send(f'Removed path of service account file. `[p]ocrset path <path_to_file>` to set path')
