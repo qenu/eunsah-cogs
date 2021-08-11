@@ -40,7 +40,6 @@ class Qenutils(commands.Cog):
 
         os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= GOOGLE_APPLICATION_CREDENTIALS['path']
 
-        hold = await ctx.send('Connecting to Google Cloud Vision API...')
         try:
             if link is None:
                 try:
@@ -48,6 +47,8 @@ class Qenutils(commands.Cog):
                 except:
                     await ctx.send_help()
                     return
+
+            hold = await ctx.send('Connecting to Google Cloud Vision API...')
             from google.cloud import vision
             client = vision.ImageAnnotatorClient()
             response = client.annotate_image(
