@@ -1,5 +1,6 @@
 import os
 import asyncio
+
 # import logging
 import discord
 import json
@@ -10,37 +11,42 @@ from time import time
 import socket
 
 # log = logging.getLogger('red.eunsahcogs.mapletcp')
-ip_head = '202.80.104'
-folder = 'TMS'
-server_json = 'server_list.json'
+ip_head = "202.80.104"
+folder = "TMS"
+server_json = "server_list.json"
 dir_path = os.path.dirname(os.path.realpath(__file__))
 AUTH_UID = 164900704526401545
 
+
 class Tmserver(commands.Cog):
-    '''
-        Tmserver 楓之谷伺服器狀態列
-    '''
+    """
+    Tmserver 楓之谷伺服器狀態列
+    """
+
     def __init__(self, bot):
         self.bot = bot
         with open(os.path.join(dir_path, folder, server_json)) as j:
             self.server_ip = json.load(j)
-        self.config = Config.get_conf(self, identifier=int(str(AUTH_UID)+'002'),  force_registration=True)
+        self.config = Config.get_conf(
+            self, identifier=int(str(AUTH_UID) + "002"), force_registration=True
+        )
         default_global = {
-            'TMServer':{
-                'Public':{
-                    'update': 0,
-                    '登入1': 0,
-                    '登入2': 0,
-                    '登入3': 0,
-                    '登入4': 0,
-                    '登入5': 0,
-                    '登入6': 0,
-                    '登入測試': 0,
-                    '跨服1': 0,
-                    '跨服2': 0,
-                    '跨服3': 0,
-                    '跨服4': 0,
-                    '跨服5': 0},
+            "TMServer": {
+                "Public": {
+                    "update": 0,
+                    "登入1": 0,
+                    "登入2": 0,
+                    "登入3": 0,
+                    "登入4": 0,
+                    "登入5": 0,
+                    "登入6": 0,
+                    "登入測試": 0,
+                    "跨服1": 0,
+                    "跨服2": 0,
+                    "跨服3": 0,
+                    "跨服4": 0,
+                    "跨服5": 0,
+                },
                 "Aria": {
                     "update": 0,
                     "副本": 0,
@@ -85,8 +91,8 @@ class Tmserver(commands.Cog):
                     "CH.37": 0,
                     "CH.38": 0,
                     "CH.39": 0,
-                    "CH.40": 0
-                    },
+                    "CH.40": 0,
+                },
                 "Freud": {
                     "update": 0,
                     "副本": 0,
@@ -121,7 +127,8 @@ class Tmserver(commands.Cog):
                     "CH.27": 0,
                     "CH.28": 0,
                     "CH.29": 0,
-                    "CH.30": 0},
+                    "CH.30": 0,
+                },
                 "Ryude": {
                     "update": 0,
                     "副本": 0,
@@ -156,7 +163,8 @@ class Tmserver(commands.Cog):
                     "CH.27": 0,
                     "CH.28": 0,
                     "CH.29": 0,
-                    "CH.30": 0},
+                    "CH.30": 0,
+                },
                 "Rhinne": {
                     "update": 0,
                     "副本": 0,
@@ -191,7 +199,8 @@ class Tmserver(commands.Cog):
                     "CH.27": 0,
                     "CH.28": 0,
                     "CH.29": 0,
-                    "CH.30": 0},
+                    "CH.30": 0,
+                },
                 "Alicia": {
                     "update": 0,
                     "副本": 0,
@@ -226,7 +235,8 @@ class Tmserver(commands.Cog):
                     "CH.27": 0,
                     "CH.28": 0,
                     "CH.29": 0,
-                    "CH.30": 0},
+                    "CH.30": 0,
+                },
                 "Orca": {
                     "update": 0,
                     "副本": 0,
@@ -261,7 +271,8 @@ class Tmserver(commands.Cog):
                     "CH.27": 0,
                     "CH.28": 0,
                     "CH.29": 0,
-                    "CH.30": 0},
+                    "CH.30": 0,
+                },
                 "Reboot": {
                     "update": 0,
                     "副本": 0,
@@ -295,14 +306,18 @@ class Tmserver(commands.Cog):
                     "CH.27": 0,
                     "CH.28": 0,
                     "CH.29": 0,
-                    "CH.30": 0
-                }}}
+                    "CH.30": 0,
+                },
+            }
+        }
         self.config.register_global(**default_global)
 
-    def latency_point(self, host: str, port: str, timeout: float = 5, offset: bool = False) -> Optional[float]:
-        '''
-            credit to : https://github.com/dgzlopes/tcp-latency
-        '''
+    def latency_point(
+        self, host: str, port: str, timeout: float = 5, offset: bool = False
+    ) -> Optional[float]:
+        """
+        credit to : https://github.com/dgzlopes/tcp-latency
+        """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(timeout)
         s_start = time()
@@ -318,76 +333,105 @@ class Tmserver(commands.Cog):
 
         s_runtime = (time() - s_start) * 1000
 
-        return round(float(s_runtime)-130, 2) if offset is False else round(float(s_runtime), 2)
+        return (
+            round(float(s_runtime) - 130, 2)
+            if offset is False
+            else round(float(s_runtime), 2)
+        )
 
     async def server_refresh(self, server: str) -> None:
         async with self.config.TMServer() as tms:
             for key in tms[server]:
-                if key != 'update':
-                    port = self.server_ip[server][key].split(':')
-                    host = '.'.join([ip_head, port[0]])
+                if key != "update":
+                    port = self.server_ip[server][key].split(":")
+                    host = ".".join([ip_head, port[0]])
                     latency = self.latency_point(host=host, port=port[1])
-                    tms[server][key] = f'{latency:.2f}ms' if latency != None else 'Timeout!'
-            tms[server]['update'] = time()
+                    tms[server][key] = (
+                        f"{latency:.2f}ms" if latency != None else "Timeout!"
+                    )
+            tms[server]["update"] = time()
 
     async def latency_dict(self, ctx: commands.Context, server: str) -> dict:
         updatecheck = await self.config.TMServer()
-        updatecheck = updatecheck[server]['update']
+        updatecheck = updatecheck[server]["update"]
         if (time() - updatecheck) > 30:
-            plswait = await ctx.send('重新刷新伺服器資料...')
+            plswait = await ctx.send("重新刷新伺服器資料...")
             await self.server_refresh(server)
             await plswait.delete()
 
         pu = dict()
         async with self.config.TMServer() as tms:
             pu = tms[server]
-        pu.pop('update')
+        pu.pop("update")
 
         return pu
 
     def make_embed(self, title: str, content: dict):
 
         info = {
-            'Aria':     ['艾麗亞'   ,'0x5151A2', 'https://i.imgur.com/4Zpashj.png'],
-            'Freud':    ['普力特'   ,'0xFF8000', 'https://i.imgur.com/aoiB4fo.png'],
-            'Ryude':    ['琉德'     ,'0x004B97', 'https://i.imgur.com/xabVrds.png'],
-            'Rhinne':   ['優伊娜'   ,'0x844200', 'https://i.imgur.com/4jNiuGA.png'],
-            'Alicia':   ['愛麗西亞' ,'0x00DB00', 'https://i.imgur.com/rdzMel4.png'],
-            'Orca':     ['殺人鯨'   ,'0x00FFFF', 'https://i.imgur.com/TMqMsaN.png'],
-            'Reboot':   ['Reboot'   ,'0x336666', 'https://i.imgur.com/bQra31g.png']
+            "Aria": ["艾麗亞", "0x5151A2", "https://i.imgur.com/4Zpashj.png"],
+            "Freud": ["普力特", "0xFF8000", "https://i.imgur.com/aoiB4fo.png"],
+            "Ryude": ["琉德", "0x004B97", "https://i.imgur.com/xabVrds.png"],
+            "Rhinne": ["優伊娜", "0x844200", "https://i.imgur.com/4jNiuGA.png"],
+            "Alicia": ["愛麗西亞", "0x00DB00", "https://i.imgur.com/rdzMel4.png"],
+            "Orca": ["殺人鯨", "0x00FFFF", "https://i.imgur.com/TMqMsaN.png"],
+            "Reboot": ["Reboot", "0x336666", "https://i.imgur.com/bQra31g.png"],
         }
         try:
             # exception for reboot
-            market = content['拍賣']
+            market = content["拍賣"]
         except KeyError:
-            market = '沒有拍賣'
+            market = "沒有拍賣"
 
         int_val = int(info[title][1], 16)
         e = discord.Embed(
-            title = info[title][0],
-            description = f'''**副本**：{content['副本']}        **商城**：{content['商城']}        **拍賣**：{market}''',
-            color = int_val
-            )
+            title=info[title][0],
+            description=f"""**副本**：{content['副本']}        **商城**：{content['商城']}        **拍賣**：{market}""",
+            color=int_val,
+        )
         e.set_thumbnail(url=info[title][2])
 
-        e.add_field(name='頻道列表', value=f'''**CH.01**：{content['CH.01']}\n**CH.02**：{content['CH.02']}\n**CH.03**：{content['CH.03']}\n**CH.04**：{content['CH.04']}\n**CH.05**：{content['CH.05']}\n**CH.06**：{content['CH.06']}\n**CH.07**：{content['CH.07']}\n**CH.08**：{content['CH.08']}\n**CH.09**：{content['CH.09']}\n**CH.10**：{content['CH.10']}\n''', inline=True)
-        e.add_field(name='\a',      value=f'''**CH.11**：{content['CH.11']}\n**CH.12**：{content['CH.12']}\n**CH.13**：{content['CH.13']}\n**CH.14**：{content['CH.14']}\n**CH.15**：{content['CH.15']}\n**CH.16**：{content['CH.16']}\n**CH.17**：{content['CH.17']}\n**CH.18**：{content['CH.18']}\n**CH.19**：{content['CH.19']}\n**CH.20**：{content['CH.20']}\n''', inline=True)
-        e.add_field(name='\a',      value=f'''**CH.21**：{content['CH.21']}\n**CH.22**：{content['CH.22']}\n**CH.23**：{content['CH.23']}\n**CH.24**：{content['CH.24']}\n**CH.25**：{content['CH.25']}\n**CH.26**：{content['CH.26']}\n**CH.27**：{content['CH.27']}\n**CH.28**：{content['CH.28']}\n**CH.29**：{content['CH.29']}\n**CH.30**：{content['CH.30']}\n''', inline=True)
+        e.add_field(
+            name="頻道列表",
+            value=f"""**CH.01**：{content['CH.01']}\n**CH.02**：{content['CH.02']}\n**CH.03**：{content['CH.03']}\n**CH.04**：{content['CH.04']}\n**CH.05**：{content['CH.05']}\n**CH.06**：{content['CH.06']}\n**CH.07**：{content['CH.07']}\n**CH.08**：{content['CH.08']}\n**CH.09**：{content['CH.09']}\n**CH.10**：{content['CH.10']}\n""",
+            inline=True,
+        )
+        e.add_field(
+            name="\a",
+            value=f"""**CH.11**：{content['CH.11']}\n**CH.12**：{content['CH.12']}\n**CH.13**：{content['CH.13']}\n**CH.14**：{content['CH.14']}\n**CH.15**：{content['CH.15']}\n**CH.16**：{content['CH.16']}\n**CH.17**：{content['CH.17']}\n**CH.18**：{content['CH.18']}\n**CH.19**：{content['CH.19']}\n**CH.20**：{content['CH.20']}\n""",
+            inline=True,
+        )
+        e.add_field(
+            name="\a",
+            value=f"""**CH.21**：{content['CH.21']}\n**CH.22**：{content['CH.22']}\n**CH.23**：{content['CH.23']}\n**CH.24**：{content['CH.24']}\n**CH.25**：{content['CH.25']}\n**CH.26**：{content['CH.26']}\n**CH.27**：{content['CH.27']}\n**CH.28**：{content['CH.28']}\n**CH.29**：{content['CH.29']}\n**CH.30**：{content['CH.30']}\n""",
+            inline=True,
+        )
         try:
-            e.add_field(name='\a',      value=f'''**CH.31**：{content['CH.31']}\n**CH.32**：{content['CH.32']}\n**CH.33**：{content['CH.33']}\n**CH.34**：{content['CH.34']}\n''', inline=True)
-            e.add_field(name='\a',      value=f'''**CH.35**：{content['CH.35']}\n**CH.36**：{content['CH.36']}\n**CH.37**：{content['CH.37']}\n**CH.38**：{content['CH.38']}\n''', inline=True)
-            e.add_field(name='\a',      value=f'''**CH.39**：{content['CH.39']}\n**CH.40**：{content['CH.40']}\n''', inline=True)
+            e.add_field(
+                name="\a",
+                value=f"""**CH.31**：{content['CH.31']}\n**CH.32**：{content['CH.32']}\n**CH.33**：{content['CH.33']}\n**CH.34**：{content['CH.34']}\n""",
+                inline=True,
+            )
+            e.add_field(
+                name="\a",
+                value=f"""**CH.35**：{content['CH.35']}\n**CH.36**：{content['CH.36']}\n**CH.37**：{content['CH.37']}\n**CH.38**：{content['CH.38']}\n""",
+                inline=True,
+            )
+            e.add_field(
+                name="\a",
+                value=f"""**CH.39**：{content['CH.39']}\n**CH.40**：{content['CH.40']}\n""",
+                inline=True,
+            )
         except KeyError:
             pass
 
-
         low = 1000.00
         high = -1000.00
-        best = 'CH.01'
-        worst = 'CH.01'
+        best = "CH.01"
+        worst = "CH.01"
 
         for key in content:
-            if key in ['副本', '商城', '拍賣']:
+            if key in ["副本", "商城", "拍賣"]:
                 continue
 
             try:
@@ -401,127 +445,170 @@ class Tmserver(commands.Cog):
             except ValueError:
                 pass
 
-        if low == 10.00: low = 'timeout'
-        if high == -10.00: high = 'timeout'
-        e.set_footer(text=f'''建議_{best}：{low} 避開_{worst}：{high}''')
+        if low == 10.00:
+            low = "timeout"
+        if high == -10.00:
+            high = "timeout"
+        e.set_footer(text=f"""建議_{best}：{low} 避開_{worst}：{high}""")
 
         return e
 
     async def forbid_channel(ctx):
-        return str(ctx.channel.id) not in ['477755023787556866', '842742981371232277']
+        return str(ctx.channel.id) not in ["477755023787556866", "842742981371232277"]
 
-    @commands.group(name='tmserver', aliases=['tms'])
+    @commands.group(name="tmserver", aliases=["tms"])
     @commands.check(forbid_channel)
     async def commands_tmserver(self, ctx):
-        '''
-            各伺服器列表
-            可以使用 [p]tmserver <伺服器> 或是 [p]tms <伺服器>
-        '''
+        """
+        各伺服器列表
+        可以使用 [p]tmserver <伺服器> 或是 [p]tms <伺服器>
+        """
         pass
 
-    @commands_tmserver.command(name='Public', aliases=['public', 'pu'])
+    @commands_tmserver.command(name="Public", aliases=["public", "pu"])
     async def tms_public(self, ctx):
-        '''
-            公用伺服器
-        '''
-        pu = await self.latency_dict(ctx, 'Public')
+        """
+        公用伺服器
+        """
+        pu = await self.latency_dict(ctx, "Public")
 
-        e = discord.Embed(title = '公用')
+        e = discord.Embed(title="公用")
 
-        e.add_field(name='登入伺服器', value=f'''**登入1**：{pu['登入1']:>8s}\n**登入2**：{pu['登入2']:>8s}''', inline=True)
+        e.add_field(
+            name="登入伺服器",
+            value=f"""**登入1**：{pu['登入1']:>8s}\n**登入2**：{pu['登入2']:>8s}""",
+            inline=True,
+        )
         # e.add_field(name='登入伺服器', value=f'''**登入1**：{pu['登入1']:>8s}\n**登入4**：{pu['登入4']:>8s}\n**測試**：{pu['登入測試']:>8s}''', inline=True)
-        e.add_field(name='\a',       value=f'''**登入3**：{pu['登入3']:>8s}\n**登入4**：{pu['登入4']:>8s}''', inline=True)
-        e.add_field(name='\a',       value=f'''**登入5**：{pu['登入5']:>8s}\n**登入6**：{pu['登入6']:>8s}''', inline=True)
+        e.add_field(
+            name="\a",
+            value=f"""**登入3**：{pu['登入3']:>8s}\n**登入4**：{pu['登入4']:>8s}""",
+            inline=True,
+        )
+        e.add_field(
+            name="\a",
+            value=f"""**登入5**：{pu['登入5']:>8s}\n**登入6**：{pu['登入6']:>8s}""",
+            inline=True,
+        )
 
-        e.add_field(name='跨服伺服器', value=f'''**跨服1**：{pu['跨服1']:>8s}\n**跨服2**：{pu['跨服2']:>8s}''', inline=True)
-        e.add_field(name='\a', value=f'''**跨服3**：{pu['跨服3']:>8s}\n**跨服4**：{pu['跨服4']:>8s}''', inline=True)
-        e.add_field(name='\a', value=f'''**跨服5**：{pu['跨服5']:>8s}''', inline=True)
+        e.add_field(
+            name="跨服伺服器",
+            value=f"""**跨服1**：{pu['跨服1']:>8s}\n**跨服2**：{pu['跨服2']:>8s}""",
+            inline=True,
+        )
+        e.add_field(
+            name="\a",
+            value=f"""**跨服3**：{pu['跨服3']:>8s}\n**跨服4**：{pu['跨服4']:>8s}""",
+            inline=True,
+        )
+        e.add_field(name="\a", value=f"""**跨服5**：{pu['跨服5']:>8s}""", inline=True)
 
-        await ctx.send(embed = e)
+        await ctx.send(embed=e)
 
-    @commands_tmserver.command(name='Aria', aliases=['aria', 'ar', 'w0'])
+    @commands_tmserver.command(name="Aria", aliases=["aria", "ar", "w0"])
     async def tms_aria(self, ctx):
-        '''
-            艾麗亞 伺服器
-        '''
-        await ctx.send(embed = self.make_embed('Aria', await self.latency_dict(ctx, 'Aria')))
+        """
+        艾麗亞 伺服器
+        """
+        await ctx.send(
+            embed=self.make_embed("Aria", await self.latency_dict(ctx, "Aria"))
+        )
 
-    @commands_tmserver.command(name='Freud', aliases=['freud', 'fr', 'w1'])
+    @commands_tmserver.command(name="Freud", aliases=["freud", "fr", "w1"])
     async def tms_freud(self, ctx):
-        '''
-            普力特 伺服器
-        '''
-        await ctx.send(embed = self.make_embed('Freud', await self.latency_dict(ctx, 'Freud')))
+        """
+        普力特 伺服器
+        """
+        await ctx.send(
+            embed=self.make_embed("Freud", await self.latency_dict(ctx, "Freud"))
+        )
 
-    @commands_tmserver.command(name='Ryude', aliases=['ryude', 'ry', 'w2'])
+    @commands_tmserver.command(name="Ryude", aliases=["ryude", "ry", "w2"])
     async def tms_ryude(self, ctx):
-        '''
-            琉德 伺服器
-        '''
-        await ctx.send(embed = self.make_embed('Ryude', await self.latency_dict(ctx, 'Ryude')))
+        """
+        琉德 伺服器
+        """
+        await ctx.send(
+            embed=self.make_embed("Ryude", await self.latency_dict(ctx, "Ryude"))
+        )
 
-    @commands_tmserver.command(name='Rhinne', aliases=['rhinne', 'rh', 'w3'])
+    @commands_tmserver.command(name="Rhinne", aliases=["rhinne", "rh", "w3"])
     async def tms_rhinne(self, ctx):
-        '''
-            優伊娜 伺服器
-        '''
-        await ctx.send(embed = self.make_embed('Rhinne', await self.latency_dict(ctx, 'Rhinne')))
+        """
+        優伊娜 伺服器
+        """
+        await ctx.send(
+            embed=self.make_embed("Rhinne", await self.latency_dict(ctx, "Rhinne"))
+        )
 
-    @commands_tmserver.command(name='Alicia', aliases=['alicia', 'al', 'ii', 'w4'])
+    @commands_tmserver.command(name="Alicia", aliases=["alicia", "al", "ii", "w4"])
     async def tms_alicia(self, ctx):
-        '''
-            愛麗西亞 伺服器
-        '''
-        await ctx.send(embed = self.make_embed('Alicia', await self.latency_dict(ctx, 'Alicia')))
+        """
+        愛麗西亞 伺服器
+        """
+        await ctx.send(
+            embed=self.make_embed("Alicia", await self.latency_dict(ctx, "Alicia"))
+        )
 
-    @commands_tmserver.command(name='Orca', aliases=['orca', 'or', 'w6'])
+    @commands_tmserver.command(name="Orca", aliases=["orca", "or", "w6"])
     async def tms_orca(self, ctx):
-        '''
-            殺人鯨 伺服器
-        '''
-        await ctx.send(embed = self.make_embed('Orca', await self.latency_dict(ctx, 'Orca')))
+        """
+        殺人鯨 伺服器
+        """
+        await ctx.send(
+            embed=self.make_embed("Orca", await self.latency_dict(ctx, "Orca"))
+        )
 
-    @commands_tmserver.command(name='Reboot', aliases=['reboot', 'rb', 'w45'])
+    @commands_tmserver.command(name="Reboot", aliases=["reboot", "rb", "w45"])
     async def tms_reboot(self, ctx):
-        '''
-            Reboot 伺服器
-        '''
-        await ctx.send(embed = self.make_embed('Reboot', await self.latency_dict(ctx, 'Reboot')))
+        """
+        Reboot 伺服器
+        """
+        await ctx.send(
+            embed=self.make_embed("Reboot", await self.latency_dict(ctx, "Reboot"))
+        )
 
-    @commands_tmserver.command(name='check', aliases=['c'])
+    @commands_tmserver.command(name="check", aliases=["c"])
     async def tms_check(self, ctx, server: str, channel: int):
-        '''
-            確認伺服器單一頻道，準確度較高
-            使用方式：[p]tms check <伺服器> <頻道>
-        '''
+        """
+        確認伺服器單一頻道，準確度較高
+        使用方式：[p]tms check <伺服器> <頻道>
+        """
         server = server.title()
-        if server not in ['Aria', 'Freud', 'Ryude', 'Rhinne', 'Alicia', 'Orca', 'Reboot']:
+        if server not in [
+            "Aria",
+            "Freud",
+            "Ryude",
+            "Rhinne",
+            "Alicia",
+            "Orca",
+            "Reboot",
+        ]:
             await ctx.send_help()
             return
         if channel not in range(31):
             await ctx.send_help()
             return
 
-        port = self.server_ip[server][f'CH.{str(channel).zfill(2)}'].split(':')
-        host = '.'.join([ip_head, port[0]])
+        port = self.server_ip[server][f"CH.{str(channel).zfill(2)}"].split(":")
+        host = ".".join([ip_head, port[0]])
         port = port[1]
 
         latency = []
-        temp_reply = await ctx.send(f'正在處理中...')
+        temp_reply = await ctx.send(f"正在處理中...")
         for i in range(10):
             latency.append(self.latency_point(host=host, port=port))
-            await temp_reply.edit(content=f'正在處理中...({i}/10)')
+            await temp_reply.edit(content=f"正在處理中...({i}/10)")
             await asyncio.sleep(1)
 
         await temp_reply.delete()
 
         try:
-            latency = sum(latency)/10
-            await ctx.send(f'{ctx.author.mention}該頻道的延遲為：{round(latency, 2)}ms')
+            latency = sum(latency) / 10
+            await ctx.send(f"{ctx.author.mention}該頻道的延遲為：{round(latency, 2)}ms")
             return
         except TypeError:
-            await ctx.send(f'{ctx.author.mention}該頻道的延遲炸了：{latency}')
-
+            await ctx.send(f"{ctx.author.mention}該頻道的延遲炸了：{latency}")
 
     # @commands.command(name='tcping')
     # @checks.admin_or_permissions(administrator=True)
@@ -536,13 +623,9 @@ class Tmserver(commands.Cog):
     #         return
     #     await ctx.send(f'{host} responded with {latency:.2f}ms latency.')
 
-
-    @commands.command(name='msginfo')
+    @commands.command(name="msginfo")
     @checks.is_owner()
     async def msginfo(self, ctx: commands.Context, msg: discord.Message):
         await ctx.send(type(msg))
         await ctx.send(msg.created_at)
         await ctx.send(msg.attachments[0].url)
-
-
-

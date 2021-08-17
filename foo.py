@@ -5,39 +5,44 @@ import asyncio
 from time import time
 from typing import Optional
 
+
 async def measure_latency(
     host: str,
     port: int = 443,
     timeout: float = 5,
     runs: int = 1,
-    wait:
-    float = 1,
+    wait: float = 1,
     human_output: bool = False,
 ) -> list:
-    '''
+    """
     :rtype: list
     Builds a list composed of latency_points
-    '''
+    """
     latency_points = []
 
     for i in range(runs):
         await asyncio.sleep(wait)
         last_latency_point = latency_point(
-            host=host, port=port, timeout=timeout,
+            host=host,
+            port=port,
+            timeout=timeout,
         )
         if human_output:
             if i == 0:
-                print('tcp-latency {}'.format(host))
+                print("tcp-latency {}".format(host))
             _human_output(
-                host=host, port=port, timeout=timeout,
-                latency_point=last_latency_point, seq_number=i,
+                host=host,
+                port=port,
+                timeout=timeout,
+                latency_point=last_latency_point,
+                seq_number=i,
             )
-            if i == len(range(runs))-1:
-                print(f'--- {host} tcp-latency statistics ---')
-                print(f'{i+1} packets transmitted')
+            if i == len(range(runs)) - 1:
+                print(f"--- {host} tcp-latency statistics ---")
+                print(f"{i+1} packets transmitted")
                 if latency_points:
                     print(
-                        f'rtt min/avg/max = {min(latency_points)}/{mean(latency_points)}/{max(latency_points)} ms',   # noqa: E501
+                        f"rtt min/avg/max = {min(latency_points)}/{mean(latency_points)}/{max(latency_points)} ms",  # noqa: E501
                     )
 
         latency_points.append(last_latency_point)
@@ -46,10 +51,10 @@ async def measure_latency(
 
 
 def latency_point(host: str, port: int = 443, timeout: float = 5) -> Optional[float]:
-    '''
+    """
     :rtype: Returns float if possible
     Calculate a latency point using sockets. If something bad happens the point returned is None
-    '''
+    """
     # New Socket and Time out
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(timeout)
@@ -76,20 +81,24 @@ def latency_point(host: str, port: int = 443, timeout: float = 5) -> Optional[fl
     return float(s_runtime)
 
 
-def _human_output(host: str, port: int, timeout: int, latency_point: float, seq_number: int):
-    '''fstring based output for the console_script'''
+def _human_output(
+    host: str, port: int, timeout: int, latency_point: float, seq_number: int
+):
+    """fstring based output for the console_script"""
     # In case latency_point is None
     if latency_point:
         print(
-            f'{host}: tcp seq={seq_number} port={port} timeout={timeout} time={latency_point} ms',
+            f"{host}: tcp seq={seq_number} port={port} timeout={timeout} time={latency_point} ms",
         )
     else:
-        print(f'{host}: tcp seq={seq_number} port={port} timeout={timeout} failed')
+        print(f"{host}: tcp seq={seq_number} port={port} timeout={timeout} failed")
+
 
 async def main():
-    host = '202.80.104.24'
-    port = '8484'
+    host = "202.80.104.24"
+    port = "8484"
     a = await measure_latency(host=host, port=port, runs=5)
-    print (a)
+    print(a)
+
 
 new = asyncio.run(main())

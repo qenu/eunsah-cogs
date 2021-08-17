@@ -12,17 +12,18 @@ from chromedriver_py import binary_path
 import discord
 from redbot.core import commands, checks, Config
 
-log=logging.getLogger("red.eunsahcogs.tms")
+log = logging.getLogger("red.eunsahcogs.tms")
+
 
 class Tms(commands.Cog):
-    """ Made to scarp update from TMS official website
-    """
-    default_config = {
-        "gochannel":0,
-        "announcements":[],
-        }
+    """Made to scarp update from TMS official website"""
 
-    def __init__(self,bot):
+    default_config = {
+        "gochannel": 0,
+        "announcements": [],
+    }
+
+    def __init__(self, bot):
         super().__init__()
         self.bot = bot
         self.config = Config.get_conf(self, identifier=164900704526401545)
@@ -50,13 +51,13 @@ class Tms(commands.Cog):
         new_announcements = list()
 
         # Driver read and setup
-        self.driver.get(self.url+self.mainpage)
+        self.driver.get(self.url + self.mainpage)
         soup = BeautifulSoup(self.driver.page_source, "lxml")
         mBulletin = soup.find_all("a", class_="mBulletin-items-link")
 
         # Iterate uBulletin
         for item in mBulletin:
-            href = item['href']
+            href = item["href"]
             if href[0:8] != "bulletin":
                 link = href
             else:
@@ -67,14 +68,14 @@ class Tms(commands.Cog):
             n = list([cate, title, date, link])
             # print (f"Found {n}")
             if n not in past_announcements:
-                print ("red.eunsahcogs.tms: Found new announcement!")
+                print("red.eunsahcogs.tms: Found new announcement!")
                 new_announcements.append(n)
                 # print ("line 67", n)
             else:
                 # print ("Announcement found in past, breaking...")
                 break
 
-        if len(new_announcements)>0:
+        if len(new_announcements) > 0:
             for a in new_announcements[::-1]:
                 # print ("line 73", a)
                 await self.tms_out(a)
@@ -87,6 +88,7 @@ class Tms(commands.Cog):
 
     def _enable_bg_loop(self):
         self.bg_loop_task = self.bot.loop.create_task(self.bg_loop())
+
         def error_handler(fut: asyncio.Future):
             try:
                 fut.result()
@@ -117,26 +119,28 @@ class Tms(commands.Cog):
         channel = self.bot.get_channel(channel)
 
         if channel == 0 or channel == None:
-            print ("channel unset, set a channel using [p]setchannel")
+            print("channel unset, set a channel using [p]setchannel")
         else:
             e = discord.Embed(
-                title = item[1],
-                description=item[0]+ "消息 - " + item[2] ,
-                url = item[3],
-                timestamp = datetime.datetime.utcnow(),
+                title=item[1],
+                description=item[0] + "消息 - " + item[2],
+                url=item[3],
+                timestamp=datetime.datetime.utcnow(),
                 color=0x69D4C2,
             )
             await channel.send(embed=e)
 
     async def bg_loop(self):
         await self.bot.wait_until_ready()
-        await asyncio.sleep(self.LOOP_INTERVAL*2)
+        await asyncio.sleep(self.LOOP_INTERVAL * 2)
         while True:
             try:
                 await self.check_update()
             except Exception as err:
-                log.exception("Exceptions occured in eunsah.tms within bg_loop function :")
-                print (err)
+                log.exception(
+                    "Exceptions occured in eunsah.tms within bg_loop function :"
+                )
+                print(err)
             finally:
                 pass
             await asyncio.sleep(self.LOOP_INTERVAL)
@@ -148,8 +152,7 @@ class Tms(commands.Cog):
 
     @tms.command()
     async def setchannel(self, ctx, channel: discord.TextChannel = None):
-        """ [p]setchannel [channel_name] to set channel, blank to unset
-        """
+        """[p]setchannel [channel_name] to set channel, blank to unset"""
         if channel:
             await self.config.gochannel.set(channel.id)
             await ctx.send(f"channel set to {channel.mention}")
