@@ -10,6 +10,7 @@ from typing import Optional
 from redbot.core import commands, checks, Config
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import ReactionPredicate
+from redbot.vendored.discord.ext import menus
 
 # log = logging.getLogger('red.eunsahcogs.maplexp')
 MAX_LEVEL = 300
@@ -546,7 +547,7 @@ class Maplexp(commands.Cog):
                 p = user.display_name
 
             empty = await ctx.send(
-                p + r"的資料列表一片空白ʕ´•ᴥ•\`ʔ" + "\n可以使用`>xp [等級] [經驗值]`來新增資料！"
+                p + r"的資料列表一片空白ʕ´•ᴥ•\`ʔ" + r"\n可以使用`>xp [等級] [經驗值]`來新增資料！"
             )
 
             await self._remove_after_seconds(empty, MESSAGE_REMOVE_DELAY)
@@ -557,6 +558,8 @@ class Maplexp(commands.Cog):
         u_name = str()
         u_level = str()
         u_date = str()
+
+
 
         for item in char_list:
             u_name += str(item[2]) + "\n"

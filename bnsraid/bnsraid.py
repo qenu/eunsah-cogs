@@ -96,22 +96,23 @@ class Bnsraid(commands.Cog):
             return
         message_id = str(payload.message_id)
         raid = await self.config.raids()
-        author = raid[message_id]["msg"][2]
-        message_list = list(raid.keys())
-        if message_id not in message_list:
-            return
-
-        if payload.emoji.name == await self.config.cancel():
-            if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member):
-                await self._raid_delete(message_id)
+        if message_id in raid:
+            author = raid[message_id]["msg"][2]
+            message_list = list(raid.keys())
+            if message_id not in message_list:
                 return
 
-        if payload.emoji.name == await self.config.emote():
-            async with self.config.raids() as raids:
-                raids[message_id]["signups"][str(payload.user_id)] = str(
-                    payload.member.display_name
-                )
-            await self._embed_updater(message_id=message_id)
+            if payload.emoji.name == await self.config.cancel():
+                if str(payload.user_id) == str(author) or self.bot.is_owner(payload.member):
+                    await self._raid_delete(message_id)
+                    return
+
+            if payload.emoji.name == await self.config.emote():
+                async with self.config.raids() as raids:
+                    raids[message_id]["signups"][str(payload.user_id)] = str(
+                        payload.member.display_name
+                    )
+                await self._embed_updater(message_id=message_id)
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(
