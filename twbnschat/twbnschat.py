@@ -79,6 +79,7 @@ class twBNSchat(commands.Cog):
         self.driver = webdriver.Chrome(
             options=driver_options,
             desired_capabilities=driver_caps,
+            executable_path=binary_path,
         )
         self._sync = self.bot.loop.create_task(self.websocket_fetch)
 
