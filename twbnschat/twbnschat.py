@@ -226,4 +226,4 @@ class twBNSchat(commands.Cog):
     @commands.is_owner()
     async def checkcache(self, ctx: commands.Context):
         """(debug) function used to view cached messages"""
-        await ctx.send(content=self.in_cached)
+        await ctx.send(content=self._cached_messages)
