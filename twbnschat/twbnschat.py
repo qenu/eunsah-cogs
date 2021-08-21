@@ -29,6 +29,7 @@ class twBNSchat(commands.Cog):
         self.bot = bot
         self._sync = False
         self._URL = ""
+        self._enabled = True
         # self.bot.loop.create_task(self.initialize())
 
         self.config = Config.get_conf(
@@ -52,6 +53,9 @@ class twBNSchat(commands.Cog):
         self.config.register_guild(**default_guild)
         self.config.register_global(**default_global)
 
+        self.bot.loop.create_task(self.initialize())
+
+
     async def red_delete_data_for_user(
         self, *, requester: RequestType, user_id: int
     ) -> None:
@@ -59,9 +63,10 @@ class twBNSchat(commands.Cog):
 
     def cog_unload(self):
         log.debug("Unloading twBNSchat...")
+        self._enabled = False
         if self._sync:
             self._sync.cancel()
-        self.exit_driver()
+        self.driver.quit()
         log.debug("Stopped selenium.")
         log.debug("twBNSchat unloaded.")
 
@@ -89,14 +94,15 @@ class twBNSchat(commands.Cog):
             executable_path=r"/usr/bin/chromedriver",
         )
         self.driver.get(URL)
-        self._sync = self.bot.loop.create_task(self.websocket_fetch())
+        self._sync = asyncio.create_task(self.start_fetch())
 
-    def exit_driver(self):
-        self._sync.cancel()
-        self.driver.quit()
+    async def start_fetch(self):
+        await self.bot.wait_until_red_ready()
+        while self._enabled:
+            await self.websocket_fetch()
+            await asyncio.sleep(3)
 
     async def websocket_fetch(self):
-        await asyncio.sleep(2.5)
         for wsData in self.driver.get_log("performance"):
             wsJson = json.loads(wsData["message"])
             if (
@@ -183,24 +189,6 @@ class twBNSchat(commands.Cog):
             )
 
         await ctx.send(f"twbnschat has been {'enabled' if boo else f'disabled'}.")
-
-    @twbnschat.command(name="driver")
-    @commands.is_owner()
-    async def driver(self, ctx: commands.Context, boo: bool):
-        """toggle selenium driver loop
-
-        Usage: [p]twbnschat driver [True | False]
-        """
-        if boo:
-            try:
-                self.bot.loop.create_task(self.initialize())
-            except Exception as err:
-                await ctx.send(f"init failed : {err}")
-                return
-            log.debug("twbnschat has started...")
-        else:
-            self.exit_driver()
-        await ctx.send(f"twbnschat has been {'activated' if boo else 'deactivated'}.")
 
     @twbnschat.command(name="url", hidden=True)
     @commands.is_owner()
