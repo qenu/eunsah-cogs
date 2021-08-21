@@ -69,6 +69,8 @@ class twBNSchat(commands.Cog):
         driver_options.add_argument("--window-size=400,600")
         driver_options.add_experimental_option("excludeSwitches", ["enable-logging"])
         driver_options.headless = True
+        driver_options.binary_location = binary_path
+
 
         driver_caps = webdriver.DesiredCapabilities.CHROME.copy()
         driver_caps["goog:loggingPrefs"] = {"performance": "ALL"}
@@ -77,7 +79,6 @@ class twBNSchat(commands.Cog):
         self.driver = webdriver.Chrome(
             options=driver_options,
             desired_capabilities=driver_caps,
-            executable_path=binary_path,
         )
         self._sync = self.bot.loop.create_task(self.websocket_fetch)
 
