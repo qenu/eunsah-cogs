@@ -74,8 +74,6 @@ class twBNSchat(commands.Cog):
         driver_options.add_argument("--disable-dev-shm-usage")
         driver_options.add_argument("--no-sandbox")
         driver_options.headless = True
-        # driver_options.binary_location = binary_path
-
 
         driver_caps = webdriver.DesiredCapabilities.CHROME.copy()
         driver_caps["goog:loggingPrefs"] = {"performance": "ALL"}
@@ -88,7 +86,7 @@ class twBNSchat(commands.Cog):
         )
         self._sync = self.bot.loop.create_task(self.websocket_fetch())
 
-    async def exit_driver(self):
+    def exit_driver(self):
         self._sync.cancel()
         self.driver.quit()
 
@@ -191,5 +189,5 @@ class twBNSchat(commands.Cog):
                 return
             log.debug("twbnschat has started...")
         else:
-            await self.exit_driver()
+            self.exit_driver()
         await ctx.send(f"twbnschat has been {'activated' if boo else 'deactivated'}.")
