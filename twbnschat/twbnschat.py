@@ -104,6 +104,9 @@ class twBNSchat(commands.Cog):
                 # if wsParsed[0] == 'getStatus':
                 if wsParsed[0] == "getInquiry":
                     await self.channel_announce(wsParsed[1])
+                    g = await self.bot.get_guild(247820107760402434)
+                    c = await g.get_channel(879630016856596521)
+                    await c.send(content= str(wsParsed[1]))
 
     async def channel_announce(self, data: dict):
         config = self.config.all_guilds()
