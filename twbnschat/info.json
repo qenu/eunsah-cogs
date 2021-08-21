@@ -6,8 +6,7 @@
     "author": ["qenu"],
     "required_cogs": {},
     "requirements": [
-        "selenium",
-        "chromedriver-py"
+        "selenium"
     ],
     "tags": ["utility"],
     "min_bot_version": "3.3.10",
