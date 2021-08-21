@@ -241,9 +241,12 @@ class twBNSchat(commands.Cog):
         self._enabled = False
         if self._sync:
             self._sync.cancel()
-        self.driver.delete_all_cookies()
-        self.driver.close()
-        self.driver.quit()
+        try:
+            self.driver.delete_all_cookies()
+            self.driver.close()
+            self.driver.quit()
+        except Exception:
+            pass
 
         await asyncio.sleep(3)
 
