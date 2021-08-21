@@ -1,3 +1,4 @@
+import twbnschat
 from typing import Literal, Optional
 import json
 import logging
@@ -116,7 +117,32 @@ class twBNSchat(commands.Cog):
     @commands.group(name="twbnschat")
     @commands.admin_or_permissions(manage_guild=True)
     async def twbnschat(self, ctx):
-        pass
+        """settings for twbnschat"""
+        await ctx.trigger_typing()
+        if ctx.invoked_subcommand is None:
+            guild: discord.Guild = ctx.guild
+            config = await self.config.guild(guild).all()
+            enabled = config["enabled"]
+            channel = config["channel"]
+
+            if await ctx.embed_requested():
+                emb = discord.Embed(
+                    color=await ctx.embed_color(), title="Current StreamRole Settings"
+                )
+                emb.add_field(name="Enabled", value=enabled)
+                emb.add_field(name="Streaming Role", value=(role and role.name))
+                emb.add_field(
+                    name="Only Promote Members With Prerequisite Role", value=promote
+                )
+                emb.add_field(
+                    name="Promotion Prerequisite Role",
+                    value=(promote_from and promote_from.name),
+                )
+                emb.add_field(
+                    name="Promote from Prerequisite and Above", value=lax_promote
+                )
+
+                await ctx.send(embed=emb)
 
     @twbnschat.command(name="channel")
     async def channel(
@@ -131,16 +157,29 @@ class twBNSchat(commands.Cog):
             None if channel is None else channel.id
         )
         await ctx.send(
-            f"twbnschat has been {'disabled' if channel is None else f'enabled at {channel.mention}'}"
+            f"channel for twbnschat has been {'unset' if channel is None else f'set at {channel.mention}'}."
         )
 
-    @twbnschat.command(name="toggle")
+    @twbnschat.command(name="enabled")
+    async def enabled(self, ctx: commands.Context, boo: bool):
+        """enables the channel for receiving
+
+        Usage: [p]twbnschat enabled [True | False]
+        """
+        await self.config.guild(ctx.guild).toggle.set(boo)
+
+        await ctx.send(f"twbnschat has been {'disabled' if boo else f'enabled'}.")
+
+    @twbnschat.command(name="driver")
     @commands.is_owner()
-    async def toggle(self, ctx: commands.Context, boo: bool):
-        """toggle selenium driver loop"""
+    async def driver(self, ctx: commands.Context, boo: bool):
+        """toggle selenium driver loop
+
+        Usage: [p]twbnschat driver [True | False]
+        """
         if boo:
             self.bot.loop.create_task(self.initialize())
             log.debug("twbnschat has started...")
         else:
-            self.exit_driver()
-        await ctx.send(f"")
+            await self.exit_driver()
+        await ctx.send(f"twbnschat has been {'activated' if boo else 'deactivated'}.")
