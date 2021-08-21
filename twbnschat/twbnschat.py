@@ -96,14 +96,14 @@ class twBNSchat(commands.Cog):
         await self.bot.wait_until_red_ready()
         while self._enabled:
             await self.websocket_fetch()
-            await asyncio.sleep(5)
+            await asyncio.sleep(1)
 
     async def websocket_fetch(self):
         announce_queue = list()
         await self.test_send("got fetch")
         for wsData in self.driver.get_log("performance"):
             wsJson = json.loads(wsData["message"])
-            # await self.test_send(wsJson["message"]["params"]["response"]["payloadData"])
+            await self.test_send(wsJson["message"]["params"]["response"]["payloadData"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
