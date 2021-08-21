@@ -111,33 +111,34 @@ class twBNSchat(commands.Cog):
             channel = await guild.get_channel(int(config[guild_id]["channel"]))
             await channel.send()
 
-    @commands.group(name="f8chat")
+    @commands.group(name="twbnschat")
     @commands.admin_or_permissions(manage_guild=True)
-    async def f8chat(self, ctx):
+    async def twbnschat(self, ctx):
         pass
 
-    @f8chat.command(name="channel")
+    @twbnschat.command(name="channel")
     async def channel(
         self, ctx: commands.Context, channel: Optional[discord.TextChannel] = None
     ):
         """sets the channel to announce updates
 
-        Usage: [p]bnsf8chat channel <#channl_mention>
+        Usage: [p]twbnschat channel <#channl_mention>
         leave blank to unset
         """
         await self.config.guild(ctx.guild).channel.set(
             None if channel is None else channel.id
         )
         await ctx.send(
-            f"f8chat has been {'disabled' if channel is None else f'enabled at {channel.mention}'}"
+            f"twbnschat has been {'disabled' if channel is None else f'enabled at {channel.mention}'}"
         )
 
-    @f8chat.command(name="toggle")
+    @twbnschat.command(name="toggle")
     @commands.is_owner()
     async def toggle(self, ctx: commands.Context, boo: bool):
         if boo:
             self.bot.loop.create_task(self.initialize())
-            log.debug("f8chat has started...")
+            log.debug("twbnschat has started...")
         else:
             self.exit_driver()
+        await ctx.send(f"")
 
