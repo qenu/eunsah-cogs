@@ -119,9 +119,11 @@ class twBNSchat(commands.Cog):
         # await self.test_send("channel announce")
 
         config = self.config.all_guilds()
+        await self.test_send(config)
         guild_queue = [
             guild_id for guild_id in config if config[guild_id]["toggle"] is True
         ]
+        await self.test_send(guild_queue)
         if not len(guild_queue):
             return
         embed = discord.Embed(title=data["player"], description=data["msg"])
