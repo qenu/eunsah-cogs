@@ -101,13 +101,14 @@ class twBNSchat(commands.Cog):
             await asyncio.sleep(3)
 
     async def websocket_fetch(self):
-        await self.test_send("got sum")
         for wsData in self.driver.get_log("performance"):
             wsJson = json.loads(wsData["message"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
             ):
+                await self.test_send("got sum")
+
                 wsParsed = json.loads(
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
