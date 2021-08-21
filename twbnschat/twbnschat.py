@@ -104,7 +104,6 @@ class twBNSchat(commands.Cog):
             return
         for wsData in log:
             wsJson = json.loads(wsData["message"])
-            await self.test_send(wsJson["message"]["params"]["response"]["payloadData"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
