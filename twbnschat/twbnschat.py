@@ -107,20 +107,16 @@ class twBNSchat(commands.Cog):
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
             ):
-                await self.test_send("got sum")
-
                 wsParsed = json.loads(
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
-                await self.test_send(str(wsParsed))
-
                 # if wsParsed[0] == 'getStatus':
                 if wsParsed[0] == "getInquiry":
                     await self.channel_announce(wsParsed[1])
 
 
     async def channel_announce(self, data: dict):
-        await self.test_send("channel announce")
+        # await self.test_send("channel announce")
 
         config = self.config.all_guilds()
         guild_queue = [
@@ -133,7 +129,7 @@ class twBNSchat(commands.Cog):
         for guild_id in guild_queue:
             guild = self.bot.get_guild(guild_id)
             channel = guild.get_channel(int(config[guild_id]["channel"]))
-            await channel.send()
+            await channel.send(embed=embed)
 
     @commands.group(name="twbnschat")
     @commands.admin_or_permissions(manage_guild=True)
