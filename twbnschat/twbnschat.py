@@ -152,9 +152,11 @@ class twBNSchat(commands.Cog):
             )
             embed.add_field(name="Enabled", value=config["toggle"])
 
+            channel = ctx.guild.get_channel(config["channel"]).mention if ctx.guild.get_channel(config["channel"]) else "None"
+
             embed.add_field(
                 name="Channel",
-                value=ctx.guild.get_channel(config["channel"]).mention,
+                value=channel,
             )
 
             await ctx.send(embed=embed)
