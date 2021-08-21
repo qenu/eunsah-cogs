@@ -115,19 +115,23 @@ class twBNSchat(commands.Cog):
         pass
 
     @f8chat.command(name="channel")
-    async def channel(self, ctx: commands.Context, channel: Optional[discord.Channel] = None):
-        '''sets the channel to announce updates
+    async def channel(
+        self, ctx: commands.Context, channel: Optional[discord.TextChannel] = None
+    ):
+        """sets the channel to announce updates
 
         Usage: [p]bnsf8chat channel <#channl_mention>
         leave blank to unset
-        '''
-        await self.config.guild(ctx.guild).channel.set(None if channel is None else channel.id)
-        await ctx.send(f"f8chat has been {'disabled' if channel is None else f'enabled at {channel.mention}'}")
+        """
+        await self.config.guild(ctx.guild).channel.set(
+            None if channel is None else channel.id
+        )
+        await ctx.send(
+            f"f8chat has been {'disabled' if channel is None else f'enabled at {channel.mention}'}"
+        )
 
     @f8chat.command(name="toggle")
     @commands.is_owner()
     async def toggle(self, ctx: commands.Context):
         self.bot.loop.create_task(self.initialize())
         log.debug("f8chat has started...")
-
-

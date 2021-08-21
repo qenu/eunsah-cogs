@@ -559,8 +559,6 @@ class Maplexp(commands.Cog):
         u_level = str()
         u_date = str()
 
-
-
         for item in char_list:
             u_name += str(item[2]) + "\n"
             u_level += str(item[1]) + "\n"
