@@ -122,27 +122,18 @@ class twBNSchat(commands.Cog):
         if ctx.invoked_subcommand is None:
             guild: discord.Guild = ctx.guild
             config = await self.config.guild(guild).all()
-            enabled = config["enabled"]
-            channel = config["channel"]
 
-            if await ctx.embed_requested():
-                emb = discord.Embed(
-                    color=await ctx.embed_color(), title="Current StreamRole Settings"
-                )
-                emb.add_field(name="Enabled", value=enabled)
-                emb.add_field(name="Streaming Role", value=(role and role.name))
-                emb.add_field(
-                    name="Only Promote Members With Prerequisite Role", value=promote
-                )
-                emb.add_field(
-                    name="Promotion Prerequisite Role",
-                    value=(promote_from and promote_from.name),
-                )
-                emb.add_field(
-                    name="Promote from Prerequisite and Above", value=lax_promote
-                )
+            embed = discord.Embed(
+                color=await ctx.embed_color(), title="Current StreamRole Settings"
+            )
+            embed.add_field(name="Enabled", value=config["enabled"])
 
-                await ctx.send(embed=emb)
+            embed.add_field(
+                name="Channel",
+                value=config["channel"],
+            )
+
+            await ctx.send(embed=embed)
 
     @twbnschat.command(name="channel")
     async def channel(
