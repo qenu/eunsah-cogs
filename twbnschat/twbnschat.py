@@ -28,7 +28,6 @@ class twBNSchat(commands.Cog):
     def __init__(self, bot: Red) -> None:
         self.bot = bot
         self._sync = False
-        self._URL = ""
         self._enabled = True
         # self.bot.loop.create_task(self.initialize())
 
@@ -70,7 +69,7 @@ class twBNSchat(commands.Cog):
         log.debug("twBNSchat unloaded.")
 
     async def initialize(self):
-        if URL := await self.config.url() == "":
+        if await self.config.url() == "":
             raise KeyError("no URL set.")
         driver_options = webdriver.ChromeOptions()
         driver_options.add_argument("--mute-audio")
@@ -92,7 +91,7 @@ class twBNSchat(commands.Cog):
             desired_capabilities=driver_caps,
             executable_path=r"/usr/bin/chromedriver",
         )
-        self.driver.get(URL)
+        self.driver.get(await self.config.url())
         self._sync = asyncio.create_task(self.start_fetch())
 
     async def start_fetch(self):
