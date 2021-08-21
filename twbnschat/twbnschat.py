@@ -92,7 +92,7 @@ class twBNSchat(commands.Cog):
             executable_path=r"/usr/bin/chromedriver",
         )
         self.driver.get('https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html')
-        self._sync = self.bot.create_task(self.start_fetch())
+        self._sync = self.bot.loop.create_task(self.start_fetch())
 
     async def start_fetch(self):
         await self.bot.wait_until_red_ready()
