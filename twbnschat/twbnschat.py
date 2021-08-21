@@ -137,9 +137,12 @@ class twBNSchat(commands.Cog):
         )
         embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
-            guild = self.bot.get_guild(guild_id)
-            channel = guild.get_channel(int(config[guild_id]["channel"]))
-            await channel.send(embed=embed)
+            try:
+                guild = self.bot.get_guild(guild_id)
+                channel = guild.get_channel(int(config[guild_id]["channel"]))
+                await channel.send(embed=embed)
+            except Exception:
+                pass
 
     def string2discordColor(self, text: str) -> str:
         hashed = str(
