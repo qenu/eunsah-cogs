@@ -114,10 +114,11 @@ class twBNSchat(commands.Cog):
                 )
                 # if wsParsed[0] == 'getStatus':
                 if wsParsed[0] == "getInquiry":
-                    announce_queue.append(wsParsed[1])
+                    # announce_queue.append(wsParsed[1])
+                    await self.channel_announce(wsParsed[1])
 
-        for relay in announce_queue:
-            await self.channel_announce(relay)
+        # for relay in announce_queue:
+        #     await self.channel_announce(relay)
 
     async def channel_announce(self, data: dict):
         config = await self.config.all_guilds()
