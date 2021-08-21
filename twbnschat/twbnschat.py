@@ -118,8 +118,7 @@ class twBNSchat(commands.Cog):
     async def channel_announce(self, data: dict):
         # await self.test_send("channel announce")
 
-        config = self.config.all_guilds()
-        await self.test_send(config)
+        config = await self.config.all_guilds()
         guild_queue = [
             guild_id for guild_id in config if config[guild_id]["toggle"] is True
         ]
