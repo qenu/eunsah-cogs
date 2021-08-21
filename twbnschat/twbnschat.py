@@ -86,7 +86,7 @@ class twBNSchat(commands.Cog):
             desired_capabilities=driver_caps,
             executable_path=r'/usr/bin/chromedriver'
         )
-        self._sync = self.bot.loop.create_task(self.websocket_fetch)
+        self._sync = self.bot.loop.create_task(self.websocket_fetch())
 
     async def exit_driver(self):
         self._sync.cancel()
