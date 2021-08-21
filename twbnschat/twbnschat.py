@@ -52,7 +52,8 @@ class twBNSchat(commands.Cog):
         self.config.register_guild(**default_guild)
         self.config.register_global(**default_global)
 
-        self.bot.loop.create_task(self.initialize())
+        # self.bot.loop.create_task(self.initialize())
+        self.initialize()
 
     async def red_delete_data_for_user(
         self, *, requester: RequestType, user_id: int
@@ -68,9 +69,8 @@ class twBNSchat(commands.Cog):
         log.debug("Stopped selenium.")
         log.debug("twBNSchat unloaded.")
 
-    async def initialize(self):
-        if await self.config.url() == "":
-            raise KeyError("no URL set.")
+    def initialize(self):
+
         driver_options = webdriver.ChromeOptions()
         driver_options.add_argument("--mute-audio")
         driver_options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -91,8 +91,8 @@ class twBNSchat(commands.Cog):
             desired_capabilities=driver_caps,
             executable_path=r"/usr/bin/chromedriver",
         )
-        self.driver.get(await self.config.url())
-        self._sync = asyncio.create_task(self.start_fetch())
+        self.driver.get('https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html')
+        self._sync = self.bot.create_task(self.start_fetch())
 
     async def start_fetch(self):
         await self.bot.wait_until_red_ready()
@@ -186,18 +186,6 @@ class twBNSchat(commands.Cog):
             )
 
         await ctx.send(f"twbnschat has been {'enabled' if boo else f'disabled'}.")
-
-    @twbnschat.command(name="url", hidden=True)
-    @commands.is_owner()
-    async def url(self, ctx: commands, url: Optional[str] = None):
-        """15 reasons why im suicidal"""
-        if url is not None:
-            await self.config.url.set(url)
-            await ctx.send(f"url set to {url}")
-        else:
-            await self.config.url.set("")
-            await ctx.send("url removed.")
-
 
     async def test_send(self, item):
         g = await self.bot.get_guild(247820107760402434)
