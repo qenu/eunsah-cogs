@@ -74,7 +74,7 @@ class twBNSchat(commands.Cog):
         driver_options.add_argument("--disable-dev-shm-usage")
         driver_options.add_argument("--no-sandbox")
         driver_options.headless = True
-        driver_options.binary_location = binary_path
+        # driver_options.binary_location = binary_path
 
 
         driver_caps = webdriver.DesiredCapabilities.CHROME.copy()
