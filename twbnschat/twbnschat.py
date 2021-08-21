@@ -28,6 +28,7 @@ class twBNSchat(commands.Cog):
     def __init__(self, bot: Red) -> None:
         self.bot = bot
         self._sync = False
+        self._URL = ""
         # self.bot.loop.create_task(self.initialize())
 
         self.config = Config.get_conf(
@@ -41,14 +42,15 @@ class twBNSchat(commands.Cog):
             "toggle": False,
         }
 
-        # default_global = {
-        #     "accountA": None,
-        #     "accountB": None,
-        #     "timestamp" : None,
-        # }
+        default_global = {
+            # "accountA": None,
+            # "accountB": None,
+            # "timestamp" : None,
+            "url": "",
+        }
 
         self.config.register_guild(**default_guild)
-        # self.config.register_global(**default_global)
+        self.config.register_global(**default_global)
 
     async def red_delete_data_for_user(
         self, *, requester: RequestType, user_id: int
@@ -64,6 +66,8 @@ class twBNSchat(commands.Cog):
         log.debug("twBNSchat unloaded.")
 
     async def initialize(self):
+        if URL := await self.config.url() == "":
+            raise KeyError("no URL set.")
         driver_options = webdriver.ChromeOptions()
         driver_options.add_argument("--mute-audio")
         driver_options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -84,6 +88,7 @@ class twBNSchat(commands.Cog):
             desired_capabilities=driver_caps,
             executable_path=r"/usr/bin/chromedriver",
         )
+        self.driver.get(URL)
         self._sync = self.bot.loop.create_task(self.websocket_fetch())
 
     def exit_driver(self):
@@ -106,14 +111,12 @@ class twBNSchat(commands.Cog):
                     await self.channel_announce(wsParsed[1])
                     g = await self.bot.get_guild(247820107760402434)
                     c = await g.get_channel(879630016856596521)
-                    await c.send(content= str(wsParsed[1]))
+                    await c.send(content=str(wsParsed[1]))
 
     async def channel_announce(self, data: dict):
         config = self.config.all_guilds()
         guild_queue = [
-            guild_id
-            for guild_id in config
-            if config[guild_id]["toggle"] is True
+            guild_id for guild_id in config if config[guild_id]["toggle"] is True
         ]
         if not len(guild_queue):
             return
@@ -198,3 +201,14 @@ class twBNSchat(commands.Cog):
         else:
             self.exit_driver()
         await ctx.send(f"twbnschat has been {'activated' if boo else 'deactivated'}.")
+
+    @twbnschat.command(name="url", hidden=True)
+    @commands.is_owner()
+    async def url(self, ctx: commands, url: Optional[str] = None):
+        """15 reasons why im suicidal"""
+        if url is not None:
+            await self.config.url.set(url)
+            await ctx.send(f"url set to {url}")
+        else:
+            await self.config.url.set("")
+            await ctx.send("url removed.")
