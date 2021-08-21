@@ -123,7 +123,7 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        embed = discord.Embed(title=data["player"], description=data["msg"], color = self.string2colorhex(data["player"]))
+        embed = discord.Embed(title=data["player"], description=data["msg"], color = self.string2discordColor(data["player"]))
         embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
             guild = self.bot.get_guild(guild_id)
