@@ -230,6 +230,18 @@ class twBNSchat(commands.Cog):
         """(debug) function used to view cached messages"""
         await ctx.send(content=self._cached_messages)
 
+    @twbnschat.command(name="refresh")
+    @commands.is_owner()
+    async def refresh(self, ctx: commands.Context):
+        """refreshes selenium connection"""
+        self._enabled = False
+        if self._sync:
+            self._sync.cancel()
+        self.driver.quit()
+
+        self.initialize()
+
+
     async def test_send(self, text:str):
         g = self.bot.get_guild(247820107760402434)
         c = g.get_channel(879630016856596521)
