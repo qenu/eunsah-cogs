@@ -126,7 +126,7 @@ class twBNSchat(commands.Cog):
             embed = discord.Embed(
                 color=await ctx.embed_color(), title="Current StreamRole Settings"
             )
-            embed.add_field(name="Enabled", value=config["enabled"])
+            embed.add_field(name="Enabled", value=config["toggle"])
 
             embed.add_field(
                 name="Channel",
