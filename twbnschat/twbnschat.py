@@ -148,7 +148,7 @@ class twBNSchat(commands.Cog):
             config = await self.config.guild(guild).all()
 
             embed = discord.Embed(
-                color=await ctx.embed_color(), title="Current StreamRole Settings"
+                color=await ctx.embed_color(), title="twB&S F8 chat settings"
             )
             embed.add_field(name="Enabled", value=config["toggle"])
 
