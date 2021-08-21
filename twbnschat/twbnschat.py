@@ -179,7 +179,7 @@ class twBNSchat(commands.Cog):
                 f"channel for twbnschat has been set to {ctx.channel.mention}"
             )
 
-        await ctx.send(f"twbnschat has been {'disabled' if boo else f'enabled'}.")
+        await ctx.send(f"twbnschat has been {'enabled' if boo else f'disabled'}.")
 
     @twbnschat.command(name="driver")
     @commands.is_owner()
