@@ -130,7 +130,7 @@ class twBNSchat(commands.Cog):
 
             embed.add_field(
                 name="Channel",
-                value=config["channel"],
+                value=ctx.guild.get_channel(config["channel"]).mention,
             )
 
             await ctx.send(embed=embed)
@@ -163,7 +163,9 @@ class twBNSchat(commands.Cog):
 
         if boo and await self.config.guild(guild).channel() == None:
             await self.config.guild(guild).channel.set(ctx.channel.id)
-            await ctx.send(f"channel for twbnschat has been set to {ctx.channel.mention}")
+            await ctx.send(
+                f"channel for twbnschat has been set to {ctx.channel.mention}"
+            )
 
         await ctx.send(f"twbnschat has been {'disabled' if boo else f'enabled'}.")
 
