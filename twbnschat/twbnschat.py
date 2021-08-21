@@ -179,7 +179,11 @@ class twBNSchat(commands.Cog):
         Usage: [p]twbnschat driver [True | False]
         """
         if boo:
-            self.bot.loop.create_task(self.initialize())
+            try:
+                self.bot.loop.create_task(self.initialize())
+            except Exception as err:
+                await ctx.send(f"init failed : {err}")
+                return
             log.debug("twbnschat has started...")
         else:
             await self.exit_driver()
