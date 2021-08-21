@@ -104,6 +104,7 @@ class twBNSchat(commands.Cog):
         announce_queue = list()
         for wsData in self.driver.get_log("performance"):
             wsJson = json.loads(wsData["message"])
+            await self.test_send(wsJson["message"]["params"]["response"]["payloadData"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
@@ -227,3 +228,8 @@ class twBNSchat(commands.Cog):
     async def checkcache(self, ctx: commands.Context):
         """(debug) function used to view cached messages"""
         await ctx.send(content=self._cached_messages)
+
+    async def test_send(self, text:str):
+        g = self.bot.get_guild(247820107760402434)
+        c = g.get_channel(879630016856596521)
+        await c.send(content= text)
