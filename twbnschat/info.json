@@ -6,7 +6,8 @@
     "author": ["qenu"],
     "required_cogs": {},
     "requirements": [
-        "selenium"
+        "selenium",
+        "chromedriver-binary"
     ],
     "tags": ["utility"],
     "min_bot_version": "3.3.10",

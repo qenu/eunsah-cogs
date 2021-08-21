@@ -4,6 +4,7 @@ import logging
 import asyncio
 
 from selenium import webdriver
+import chromedriver_binary
 
 import discord
 from redbot.core import commands
@@ -132,6 +133,10 @@ class twBNSchat(commands.Cog):
 
     @f8chat.command(name="toggle")
     @commands.is_owner()
-    async def toggle(self, ctx: commands.Context):
-        self.bot.loop.create_task(self.initialize())
-        log.debug("f8chat has started...")
+    async def toggle(self, ctx: commands.Context, boo: bool):
+        if boo:
+            self.bot.loop.create_task(self.initialize())
+            log.debug("f8chat has started...")
+        else:
+            self.exit_driver()
+
