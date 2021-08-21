@@ -241,8 +241,11 @@ class twBNSchat(commands.Cog):
         self._enabled = False
         if self._sync:
             self._sync.cancel()
+        self.driver.close()
         self.driver.quit()
         self.driver.delete_all_cookies()
+
+        await asyncio.sleep(3)
 
         await ctx.send("re-initializing driver")
 
