@@ -126,7 +126,7 @@ class twBNSchat(commands.Cog):
         embed = discord.Embed(title=data["player"], description=data["msg"])
         embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
-            guild = await self.bot.get_guild(guild_id)
+            guild = self.bot.get_guild(guild_id)
             channel = await guild.get_channel(int(config[guild_id]["channel"]))
             await channel.send()
 
@@ -189,6 +189,6 @@ class twBNSchat(commands.Cog):
         await ctx.send(f"twbnschat has been {'enabled' if boo else f'disabled'}.")
 
     async def test_send(self, item):
-        g = await self.bot.get_guild(247820107760402434)
+        g = self.bot.get_guild(247820107760402434)
         c = await g.get_channel(879630016856596521)
         await c.send(content=str(item))
