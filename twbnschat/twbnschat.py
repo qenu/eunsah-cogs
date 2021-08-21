@@ -99,9 +99,10 @@ class twBNSchat(commands.Cog):
             await asyncio.sleep(1)
 
     async def websocket_fetch(self):
-        announce_queue = list()
-        await self.test_send("got fetch")
-        for wsData in self.driver.get_log("performance"):
+        log = self.driver.get_log("performance")
+        if len(log) == 0:
+            return
+        for wsData in log:
             wsJson = json.loads(wsData["message"])
             await self.test_send(wsJson["message"]["params"]["response"]["payloadData"])
             if (
