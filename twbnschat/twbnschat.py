@@ -82,7 +82,7 @@ class twBNSchat(commands.Cog):
         self.driver = webdriver.Chrome(
             options=driver_options,
             desired_capabilities=driver_caps,
-            executable_path=r'/usr/bin/chromedriver'
+            executable_path=r"/usr/bin/chromedriver",
         )
         self._sync = self.bot.loop.create_task(self.websocket_fetch())
 
@@ -108,7 +108,9 @@ class twBNSchat(commands.Cog):
     async def channel_announce(self, data: dict):
         config = self.config.all_guilds()
         guild_queue = [
-            guild_id for guild_id in config if config[guild_id]["channel"] is not None
+            guild_id
+            for guild_id in config
+            if config[guild_id]["toggle"] is True
         ]
         if not len(guild_queue):
             return
@@ -152,6 +154,8 @@ class twBNSchat(commands.Cog):
         await self.config.guild(ctx.guild).channel.set(
             None if channel is None else channel.id
         )
+        if channel is None:
+            await self.enabled(ctx, False)
         await ctx.send(
             f"channel for twbnschat has been {'unset' if channel is None else f'set at {channel.mention}'}."
         )
