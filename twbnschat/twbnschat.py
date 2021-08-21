@@ -122,8 +122,8 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        if self.in_cached(data["player"] + "|" + data["msg"]):
-            return
+        # if self.in_cached(data["player"] + "|" + data["msg"]):
+        #     return
 
         embed = discord.Embed(
             title=data["player"],
