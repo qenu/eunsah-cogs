@@ -228,6 +228,7 @@ class twBNSchat(commands.Cog):
     async def checkcache(self, ctx: commands.Context):
         """(debug) function used to view cached messages"""
         await ctx.send(content=self._cached_messages)
+        await ctx.send(content=self.driver.current_url)
 
     @twbnschat.command(name="refresh")
     @commands.is_owner()
@@ -238,6 +239,8 @@ class twBNSchat(commands.Cog):
         if self._sync:
             self._sync.cancel()
         self.driver.quit()
+        self.driver.delete_all_cookies()
+
         await ctx.send("re-initializing driver")
 
         self.initialize()
