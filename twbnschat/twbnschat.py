@@ -234,12 +234,15 @@ class twBNSchat(commands.Cog):
     @commands.is_owner()
     async def refresh(self, ctx: commands.Context):
         """refreshes selenium connection"""
+        await ctx.send("refresing selenium connection")
         self._enabled = False
         if self._sync:
             self._sync.cancel()
         self.driver.quit()
+        await ctx.send("re-initializing driver")
 
         self.initialize()
+        await ctx.send("done")
 
 
     async def test_send(self, text:str):
