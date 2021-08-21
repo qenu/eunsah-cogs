@@ -157,7 +157,13 @@ class twBNSchat(commands.Cog):
 
         Usage: [p]twbnschat enabled [True | False]
         """
-        await self.config.guild(ctx.guild).toggle.set(boo)
+        guild: discord.Guild = ctx.guild
+
+        await self.config.guild(guild).toggle.set(boo)
+
+        if boo and await self.config.guild(guild).channel() == None:
+            await self.config.guild(guild).channel.set(ctx.channel.id)
+            await ctx.send(f"channel for twbnschat has been set to {ctx.channel.mention}")
 
         await ctx.send(f"twbnschat has been {'disabled' if boo else f'enabled'}.")
 
