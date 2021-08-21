@@ -1,0 +1,16 @@
+{
+    "name": "Taiwan Blade&Soul F8 chat",
+    "short": "twbnschat",
+    "description": "Websocket parse for blade and soul f8 chat",
+    "end_user_data_statement": "this cog does not store or save any user data",
+    "author": ["qenu"],
+    "required_cogs": {},
+    "requirements": [
+        "selenium"
+    ],
+    "tags": ["utility"],
+    "min_bot_version": "3.3.10",
+    "hidden": false,
+    "disabled": false,
+    "type": "COG"
+}
