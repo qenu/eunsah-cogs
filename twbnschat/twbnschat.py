@@ -125,8 +125,11 @@ class twBNSchat(commands.Cog):
         await self.test_send(guild_queue)
         if not len(guild_queue):
             return
+        await self.test_send("making embed")
         embed = discord.Embed(title=data["player"], description=data["msg"])
         embed.set_footer(text=data["time"])
+        await self.test_send("read to send embed")
+
         for guild_id in guild_queue:
             guild = self.bot.get_guild(guild_id)
             channel = guild.get_channel(int(config[guild_id]["channel"]))
