@@ -135,6 +135,7 @@ class twBNSchat(commands.Cog):
     async def twbnschat(self, ctx):
         """settings for twbnschat"""
         await ctx.trigger_typing()
+        await self.test_send('maybe>')
         if ctx.invoked_subcommand is None:
             guild: discord.Guild = ctx.guild
             config = await self.config.guild(guild).all()
