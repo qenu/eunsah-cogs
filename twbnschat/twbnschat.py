@@ -101,6 +101,7 @@ class twBNSchat(commands.Cog):
             await asyncio.sleep(1.5)
 
     async def websocket_fetch(self):
+        announce_queue = list()
         for wsData in self.driver.get_log("performance"):
             wsJson = json.loads(wsData["message"])
             if (
@@ -112,7 +113,10 @@ class twBNSchat(commands.Cog):
                 )
                 # if wsParsed[0] == 'getStatus':
                 if wsParsed[0] == "getInquiry":
-                    await self.channel_announce(wsParsed[1])
+                    announce_queue.append(wsParsed[1])
+
+        for relay in announce_queue:
+            await self.channel_announce(relay)
 
     async def channel_announce(self, data: dict):
         config = await self.config.all_guilds()
@@ -122,8 +126,8 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        # if self.in_cached(data["player"] + "|" + data["msg"]):
-        #     return
+        if self.in_cached(data["player"] + "|" + data["msg"]):
+            return
 
         embed = discord.Embed(
             title=data["player"],
