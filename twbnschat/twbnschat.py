@@ -74,7 +74,9 @@ class twBNSchat(commands.Cog):
 
         log.debug("Initializing selenium...")
         self.driver = webdriver.Chrome(
-            options=driver_options, desired_capabilities=driver_caps, executable_path=binary_path
+            options=driver_options,
+            desired_capabilities=driver_caps,
+            executable_path=binary_path,
         )
         self._sync = self.bot.loop.create_task(self.websocket_fetch)
 
@@ -120,7 +122,7 @@ class twBNSchat(commands.Cog):
     async def channel(
         self, ctx: commands.Context, channel: Optional[discord.TextChannel] = None
     ):
-        """sets the channel to announce updates
+        """sets the channel to receive driver updates
 
         Usage: [p]twbnschat channel <#channl_mention>
         leave blank to unset
@@ -135,10 +137,10 @@ class twBNSchat(commands.Cog):
     @twbnschat.command(name="toggle")
     @commands.is_owner()
     async def toggle(self, ctx: commands.Context, boo: bool):
+        """toggle selenium driver loop"""
         if boo:
             self.bot.loop.create_task(self.initialize())
             log.debug("twbnschat has started...")
         else:
             self.exit_driver()
         await ctx.send(f"")
-
