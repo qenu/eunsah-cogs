@@ -7,7 +7,7 @@
     "required_cogs": {},
     "requirements": [
         "selenium",
-        "chromedriver-binary"
+        "chromedriver-py"
     ],
     "tags": ["utility"],
     "min_bot_version": "3.3.10",

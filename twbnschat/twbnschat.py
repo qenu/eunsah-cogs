@@ -4,7 +4,8 @@ import logging
 import asyncio
 
 from selenium import webdriver
-import chromedriver_binary
+from chromedriver_py import binary_path
+
 
 import discord
 from redbot.core import commands
@@ -73,7 +74,7 @@ class twBNSchat(commands.Cog):
 
         log.debug("Initializing selenium...")
         self.driver = webdriver.Chrome(
-            options=driver_options, desired_capabilities=driver_caps
+            options=driver_options, desired_capabilities=driver_caps, executable_path=binary_path
         )
         self._sync = self.bot.loop.create_task(self.websocket_fetch)
 
