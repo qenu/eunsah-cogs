@@ -55,7 +55,6 @@ class twBNSchat(commands.Cog):
 
         self.bot.loop.create_task(self.initialize())
 
-
     async def red_delete_data_for_user(
         self, *, requester: RequestType, user_id: int
     ) -> None:
