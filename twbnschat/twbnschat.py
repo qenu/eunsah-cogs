@@ -3,6 +3,7 @@ from typing import Literal, Optional
 import json
 import logging
 import asyncio
+import hashlib
 
 from selenium import webdriver
 from chromedriver_py import binary_path
@@ -114,33 +115,34 @@ class twBNSchat(commands.Cog):
                 if wsParsed[0] == "getInquiry":
                     await self.channel_announce(wsParsed[1])
 
-
     async def channel_announce(self, data: dict):
-        # await self.test_send("channel announce")
-
         config = await self.config.all_guilds()
         guild_queue = [
             guild_id for guild_id in config if config[guild_id]["toggle"] is True
         ]
-        await self.test_send(guild_queue)
         if not len(guild_queue):
             return
-        await self.test_send("making embed")
-        embed = discord.Embed(title=data["player"], description=data["msg"])
-        embed.set_footer(text=data["time"])
-        await self.test_send("read to send embed")
 
+        embed = discord.Embed(title=data["player"], description=data["msg"], color = self.string2colorhex(data["player"]))
+        embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
             guild = self.bot.get_guild(guild_id)
             channel = guild.get_channel(int(config[guild_id]["channel"]))
             await channel.send(embed=embed)
+
+    def string2discordColor(self, text:str) -> str:
+        hashed = str(int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9))
+        r = int(hashed[:3]) % 255
+        g = int(hashed[3:6]) % 255
+        b = int(hashed[6:]) % 255
+
+        return discord.Color.from_rgb(r, g, b)
 
     @commands.group(name="twbnschat")
     @commands.admin_or_permissions(manage_guild=True)
     async def twbnschat(self, ctx):
         """settings for twbnschat"""
         await ctx.trigger_typing()
-        await self.test_send('maybe>')
         if ctx.invoked_subcommand is None:
             guild: discord.Guild = ctx.guild
             config = await self.config.guild(guild).all()
