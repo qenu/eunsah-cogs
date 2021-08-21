@@ -127,7 +127,7 @@ class twBNSchat(commands.Cog):
         embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
             guild = self.bot.get_guild(guild_id)
-            channel = await guild.get_channel(int(config[guild_id]["channel"]))
+            channel = guild.get_channel(int(config[guild_id]["channel"]))
             await channel.send()
 
     @commands.group(name="twbnschat")
@@ -190,5 +190,5 @@ class twBNSchat(commands.Cog):
 
     async def test_send(self, item):
         g = self.bot.get_guild(247820107760402434)
-        c = await g.get_channel(879630016856596521)
+        c = g.get_channel(879630016856596521)
         await c.send(content=str(item))
