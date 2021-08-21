@@ -101,6 +101,7 @@ class twBNSchat(commands.Cog):
             await asyncio.sleep(3)
 
     async def websocket_fetch(self):
+        await self.test_send("got sum")
         for wsData in self.driver.get_log("performance"):
             wsJson = json.loads(wsData["message"])
             if (
@@ -113,9 +114,7 @@ class twBNSchat(commands.Cog):
                 # if wsParsed[0] == 'getStatus':
                 if wsParsed[0] == "getInquiry":
                     await self.channel_announce(wsParsed[1])
-                    g = await self.bot.get_guild(247820107760402434)
-                    c = await g.get_channel(879630016856596521)
-                    await c.send(content=str(wsParsed[1]))
+
 
     async def channel_announce(self, data: dict):
         config = self.config.all_guilds()
@@ -198,3 +197,9 @@ class twBNSchat(commands.Cog):
         else:
             await self.config.url.set("")
             await ctx.send("url removed.")
+
+
+    async def test_send(self, item):
+        g = await self.bot.get_guild(247820107760402434)
+        c = await g.get_channel(879630016856596521)
+        await c.send(content=str(item))
