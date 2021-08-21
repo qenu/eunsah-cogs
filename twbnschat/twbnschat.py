@@ -98,7 +98,7 @@ class twBNSchat(commands.Cog):
         await self.bot.wait_until_red_ready()
         while self._enabled:
             await self.websocket_fetch()
-            await asyncio.sleep(3)
+            await asyncio.sleep(1.5)
 
     async def websocket_fetch(self):
         for wsData in self.driver.get_log("performance"):
