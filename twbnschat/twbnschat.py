@@ -28,6 +28,7 @@ class twBNSchat(commands.Cog):
         self.bot = bot
         self._sync = False
         self._enabled = True
+        self._status = ('-', '-')
         self._cached_messages = list()
 
         self.config = Config.get_conf(
@@ -112,7 +113,8 @@ class twBNSchat(commands.Cog):
                 wsParsed = json.loads(
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
-                # if wsParsed[0] == 'getStatus':
+                if wsParsed[0] == 'getStatus':
+                    self._status = (wsParsed[1]["accountA"], wsParsed[1]["accountA"])
                 if wsParsed[0] == "getInquiry":
                     announce_queue.append(wsParsed[1])
                     # await self.channel_announce(wsParsed[1])
@@ -256,6 +258,14 @@ class twBNSchat(commands.Cog):
         self.initialize()
         await ctx.send("done")
 
+    @twbnschat.command(name="status")
+    async def status(self, ctx: commands.Context):
+        """shows the last obtained status from site"""
+        emb = discord.Embed(description = "Last Reported")
+        emb.add_field(name="accountA", value=self._status[0])
+        emb.add_field(name="accountB", value=self._status[1])
+
+        await ctx.send(embed = emb)
 
     async def test_send(self, text:str):
         g = self.bot.get_guild(247820107760402434)
