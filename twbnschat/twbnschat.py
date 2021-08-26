@@ -88,7 +88,7 @@ class twBNSchat(commands.Cog):
             desired_capabilities=driver_caps,
             executable_path=r"/usr/bin/chromedriver",
         )
-        self.bot.wait_until_red_ready()
+        await self.bot.wait_until_red_ready()
         self.driver.get(
             "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
         )
