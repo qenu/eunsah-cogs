@@ -28,7 +28,7 @@ class twBNSchat(commands.Cog):
         self.bot = bot
         self._sync = False
         self._enabled = True
-        self._status = ('-', '-')
+        # self._status = ('-', '-')
         self._cached_messages = list()
 
         self.config = Config.get_conf(
@@ -42,15 +42,15 @@ class twBNSchat(commands.Cog):
             "toggle": False,
         }
 
-        # default_global = {
-        #     "accountA": None,
-        #     "accountB": None,
-        #     "timestamp" : None,
-        #     "url": "",
-        # }
+        default_global = {
+            "accountA": None,
+            "accountB": None,
+            # "timestamp" : None,
+            # "url": "",
+        }
 
         self.config.register_guild(**default_guild)
-        # self.config.register_global(**default_global)
+        self.config.register_global(**default_global)
 
         self.initialize()
 
@@ -88,6 +88,7 @@ class twBNSchat(commands.Cog):
             desired_capabilities=driver_caps,
             executable_path=r"/usr/bin/chromedriver",
         )
+        self.bot.wait_until_red_ready()
         self.driver.get(
             "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
         )
@@ -114,7 +115,8 @@ class twBNSchat(commands.Cog):
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
                 if wsParsed[0] == 'getStatus':
-                    self._status = (wsParsed[1]["accountA"], wsParsed[1]["accountA"])
+                    await self.config.accountA.set(wsParsed[1]["accountA"])
+                    await self.config.accountB.set(wsParsed[1]["accountB"])
                 if wsParsed[0] == "getInquiry":
                     announce_queue.append(wsParsed[1])
                     # await self.channel_announce(wsParsed[1])
@@ -258,12 +260,18 @@ class twBNSchat(commands.Cog):
         self.initialize()
         await ctx.send("done")
 
+    @twbnschat.command(name="url")
+    @commands.is_owner()
+    async def url(self, ctx: commands.Context, url: Optional[str] = None):
+        await self.config
+
+
     @twbnschat.command(name="status")
     async def status(self, ctx: commands.Context):
         """shows the last obtained status from site"""
         emb = discord.Embed(description = "Last Reported")
-        emb.add_field(name="accountA", value=self._status[0])
-        emb.add_field(name="accountB", value=self._status[1])
+        emb.add_field(name="accountA", value=await self.config.accountA())
+        emb.add_field(name="accountB", value=await self.config.accountB())
 
         await ctx.send(embed = emb)
 
