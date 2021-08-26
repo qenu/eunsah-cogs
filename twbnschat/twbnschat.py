@@ -29,7 +29,7 @@ class twBNSchat(commands.Cog):
         self._sync = False
         self._enabled = True
         # self._status = ('-', '-')
-        self._cached_messages = list()
+        self._cached_messages = []
 
         self.config = Config.get_conf(
             self,
@@ -100,7 +100,7 @@ class twBNSchat(commands.Cog):
             await asyncio.sleep(5)
 
     async def websocket_fetch(self):
-        announce_queue = list()
+        announce_queue = []
         log = self.driver.get_log("performance")
         if len(log) == 0:
             return
