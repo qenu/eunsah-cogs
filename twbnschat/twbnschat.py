@@ -107,7 +107,7 @@ class twBNSchat(commands.Cog):
         announce_queue = []
         log = self.driver.get_log("performance")
 
-        if 130 < len(log) or len(log) <= 0:
+        if 30 < len(log) or len(log) <= 0:
             return
         await self.test_send(f"got log, len: {len(log)}")
 
@@ -177,7 +177,7 @@ class twBNSchat(commands.Cog):
 
         data_l = [data for data in data_l if self.in_cached(data["player"] + "|" + data["msg"])]
 
-        joinee = [f'{data["time"]} **{data["player"]}** : `{data["msg"]}`' for data in data_l]
+        joinee = [f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in data_l]
 
         await self.test_send("\n".join(joinee))
 
