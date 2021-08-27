@@ -112,17 +112,15 @@ class twBNSchat(commands.Cog):
         await self.test_send(f"got log, len: {len(log)}")
 
         for wsData in log:
-            await self.test_send(f"processed log: {wsData[:1000]}")
             wsJson = json.loads(wsData["message"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
             ):
-                await self.test_send(f"processed log: {wsParsed}")
-
                 wsParsed = json.loads(
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
+                await self.test_send(f"processed log: {wsParsed}")
                 if wsParsed[0] == "getStatus":
                     await self.test_send("status")
                     await self.config.accountA.set(wsParsed[1]["accountA"])
