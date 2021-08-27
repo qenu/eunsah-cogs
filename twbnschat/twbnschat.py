@@ -102,8 +102,8 @@ class twBNSchat(commands.Cog):
 
     async def websocket_fetch(self):
         announce_queue = []
-        fake_task = functools.partial(self.driver.get_log("performance"))
-        task = self.bot.loop.run_in_executor(None, fake_task)
+        foo = functools.partial(self.driver.get_log("performance"))
+        task = self.bot.loop.run_in_executor(None, foo)
         try:
             await asyncio.wait_for(task, timeout=10)
         except TimeoutError:
@@ -263,8 +263,8 @@ class twBNSchat(commands.Cog):
 
         await ctx.send("re-initializing driver")
 
-        # fake_task = functools.partial(self.initialize)
-        # task = self.bot.loop.run_in_executor(None, fake_task)
+        # foo = functools.partial(self.initialize)
+        # task = self.bot.loop.run_in_executor(None, foo)
         # try:
         #     await asyncio.wait_for(task, timeout=60)
         # except asyncio.TimeoutError:
