@@ -52,7 +52,7 @@ class twBNSchat(commands.Cog):
         self.config.register_guild(**default_guild)
         self.config.register_global(**default_global)
 
-        self.bot.loop.create_task(self.initialize())
+        bot.loop.create_task(self.initialize())
 
     async def red_delete_data_for_user(
         self, *, requester: RequestType, user_id: int
