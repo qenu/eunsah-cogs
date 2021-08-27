@@ -100,7 +100,6 @@ class twBNSchat(commands.Cog):
         while self._enabled:
             await self.websocket_fetch()
             await asyncio.sleep(5)
-            await self.test_send("ws fetch") # <<< ================================
 
     async def websocket_fetch(self):
 
@@ -110,6 +109,7 @@ class twBNSchat(commands.Cog):
 
         if len(log) == 0:
             return
+        await self.test_send("ws fetch") # <<< ================================
         for wsData in log:
             wsJson = json.loads(wsData["message"])
             if (
