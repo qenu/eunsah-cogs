@@ -112,6 +112,7 @@ class twBNSchat(commands.Cog):
         await self.test_send(f"got log, len: {len(log)}")
 
         for wsData in log:
+            await self.test_send(str(wsData))
             wsJson = json.loads(wsData["message"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
@@ -127,6 +128,7 @@ class twBNSchat(commands.Cog):
                     await self.test_send("status")
                     await self.config.accountA.set(wsParsed[1]["accountA"])
                     await self.config.accountB.set(wsParsed[1]["accountB"])
+                    return
                 if wsParsed[0] == "getInquiry":
                     await self.test_send("inquiry")
                     announce_queue.append(wsParsed[1])
@@ -183,9 +185,7 @@ class twBNSchat(commands.Cog):
             if self.in_cached(data["player"] + "|" + data["msg"]):
                 dataparse.append(data)
 
-        joinee = [
-            f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in dataparse
-        ]
+        joinee = [f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in dataparse]
 
         await self.test_send("\n".join(joinee))
 
