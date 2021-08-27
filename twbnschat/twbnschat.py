@@ -159,11 +159,17 @@ class twBNSchat(commands.Cog):
         await self.test_send("sending")
 
         config = await self.config.all_guilds()
+        await self.test_send("sending1.1")
+
         guild_queue = [
             guild_id for guild_id in config if config[guild_id]["toggle"] is True
         ]
+        await self.test_send("sending1.2")
+
         if not len(guild_queue):
             return
+        await self.test_send("sending1.3")
+
 
         if in_cached(data["player"] + "|" + data["msg"]):
             return
