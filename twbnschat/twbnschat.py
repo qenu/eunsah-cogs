@@ -95,20 +95,20 @@ class twBNSchat(commands.Cog):
         self._sync = self.bot.loop.create_task(self.start_fetch())
 
     async def start_fetch(self):
-
         await self.bot.wait_until_red_ready()
         while self._enabled:
-            await self.test_send("in loop")
             await self.websocket_fetch()
             await asyncio.sleep(5)
 
     async def websocket_fetch(self):
-
         announce_queue = []
-
-        self.driver.get_log("performance")
-        await self.test_send("ws fetch") # <<< ================================
-
+        foo = functools.partial(self.driver.get_log("performance"))
+        task = self.bot.loop.run_in_executor(log, foo)
+        try:
+            await asyncio.wait_for(task, timeout=10)
+        except TimeoutError:
+            log.debug("driver.get_log timeout")
+            return
         if len(log) == 0:
             return
         for wsData in log:
@@ -138,13 +138,13 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        if self.in_cached(data["player"] + "|" + data["msg"]):
+        if await self.in_cached(data["player"] + "|" + data["msg"]):
             return
 
         embed = discord.Embed(
             title=data["player"],
             description=data["msg"],
-            color=self.string2discordColor(data["player"]),
+            color=await self.string2discordColor(data["player"]),
         )
         embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
@@ -155,7 +155,7 @@ class twBNSchat(commands.Cog):
             except Exception:
                 pass
 
-    def string2discordColor(self, text: str) -> str:
+    async def string2discordColor(self, text: str) -> str:
         hashed = str(
             int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
         )
@@ -165,7 +165,7 @@ class twBNSchat(commands.Cog):
 
         return discord.Color.from_rgb(r, g, b)
 
-    def in_cached(self, text: str) -> bool:
+    async def in_cached(self, text: str) -> bool:
         if text in self._cached_messages:
             return True
         else:
