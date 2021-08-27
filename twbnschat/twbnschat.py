@@ -109,7 +109,7 @@ class twBNSchat(commands.Cog):
 
         if len(log) == 0:
             return
-        await self.test_send("got log")
+        await self.test_send(f"got log, len: {len(log)}")
 
         for wsData in log:
             wsJson = json.loads(wsData["message"])
