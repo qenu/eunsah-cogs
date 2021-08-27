@@ -101,7 +101,7 @@ class twBNSchat(commands.Cog):
             await self.test_send("in loop")
 
             await self.websocket_fetch()
-            await asyncio.sleep(5)
+            await asyncio.sleep(8)
 
     async def websocket_fetch(self):
         announce_queue = []
@@ -112,6 +112,7 @@ class twBNSchat(commands.Cog):
         await self.test_send(f"got log, len: {len(log)}")
 
         for wsData in log:
+            await self.test_send(f"processed log: {wsData[:1000]}")
             wsJson = json.loads(wsData["message"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
@@ -137,6 +138,26 @@ class twBNSchat(commands.Cog):
             await self.channel_announce(relay)
 
     async def channel_announce(self, data: dict):
+
+        def string2discordColor(self, text: str) -> str:
+            hashed = str(
+                int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
+            )
+            r = int(hashed[:3]) % 255
+            g = int(hashed[3:6]) % 255
+            b = int(hashed[6:]) % 255
+
+            return discord.Color.from_rgb(r, g, b)
+
+        def in_cached(self, text: str) -> bool:
+            if text in self._cached_messages:
+                return True
+            else:
+                self._cached_messages.append(text)
+                if len(self._cached_messages >= 30):
+                    self._cached_messages = self._cached_messages[:30]
+                return False
+
         await self.test_send("sending")
 
         config = await self.config.all_guilds()
@@ -146,7 +167,7 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        if self.in_cached(data["player"] + "|" + data["msg"]):
+        if in_cached(data["player"] + "|" + data["msg"]):
             return
 
         await self.test_send("sending 2")
@@ -155,7 +176,7 @@ class twBNSchat(commands.Cog):
         embed = discord.Embed(
             title=data["player"],
             description=data["msg"],
-            color=self.string2discordColor(data["player"]),
+            color=string2discordColor(data["player"]),
         )
         embed.set_footer(text=data["time"])
 
@@ -169,26 +190,6 @@ class twBNSchat(commands.Cog):
             except Exception:
                 pass
         await self.test_send("sending4")
-
-
-    def string2discordColor(self, text: str) -> str:
-        hashed = str(
-            int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
-        )
-        r = int(hashed[:3]) % 255
-        g = int(hashed[3:6]) % 255
-        b = int(hashed[6:]) % 255
-
-        return discord.Color.from_rgb(r, g, b)
-
-    def in_cached(self, text: str) -> bool:
-        if text in self._cached_messages:
-            return True
-        else:
-            self._cached_messages.append(text)
-            if len(self._cached_messages >= 30):
-                self._cached_messages = self._cached_messages[:30]
-            return False
 
     @commands.group(name="twbnschat")
     @commands.admin_or_permissions(manage_guild=True)
