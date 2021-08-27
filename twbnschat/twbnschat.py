@@ -175,9 +175,15 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        data_l = [data for data in data_l if self.in_cached(data["player"] + "|" + data["msg"])]
+        # data_l = [data for data in data_l if self.in_cached(data["player"] + "|" + data["msg"])]
 
-        joinee = [f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in data_l]
+        dataparse = []
+
+        for data in data_l:
+            if self.in_cached(data["player"] + "|" + data["msg"]):
+                dataparse.append(data)
+
+        joinee = [f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in dataparse]
 
         await self.test_send("\n".join(joinee))
 
