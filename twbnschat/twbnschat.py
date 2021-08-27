@@ -95,8 +95,11 @@ class twBNSchat(commands.Cog):
         self._sync = self.bot.loop.create_task(self.start_fetch())
 
     async def start_fetch(self):
+        await self.test_send("start")
         await self.bot.wait_until_red_ready()
         while self._enabled:
+            await self.test_send("in loop")
+
             await self.websocket_fetch()
             await asyncio.sleep(5)
 
@@ -106,12 +109,16 @@ class twBNSchat(commands.Cog):
 
         if len(log) == 0:
             return
+        await self.test_send("got log")
+
         for wsData in log:
             wsJson = json.loads(wsData["message"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
             ):
+                await self.test_send("processed log")
+
                 wsParsed = json.loads(
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
