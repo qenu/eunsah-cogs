@@ -69,6 +69,7 @@ class twBNSchat(commands.Cog):
         log.debug("twBNSchat unloaded.")
 
     async def initialize(self):
+        await self.test_send("init")
         await self.bot.wait_until_red_ready()
 
         driver_options = webdriver.ChromeOptions()
@@ -95,12 +96,16 @@ class twBNSchat(commands.Cog):
         self._sync = self.bot.loop.create_task(self.start_fetch())
 
     async def start_fetch(self):
+        await self.test_send("fetch")
+
         await self.bot.wait_until_red_ready()
         while self._enabled:
             await self.websocket_fetch()
             await asyncio.sleep(5)
 
     async def websocket_fetch(self):
+        await self.test_send("ws fetch")
+
         announce_queue = []
 
         self.driver.get_log("performance")
