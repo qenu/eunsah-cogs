@@ -133,27 +133,9 @@ class twBNSchat(commands.Cog):
             await self.test_send("relay")
 
             await self.channel_announce(relay)
+        await self.text_announce(announce_queue)
 
     async def channel_announce(self, data: dict):
-
-        def string2discordColor(text: str) -> str:
-            hashed = str(
-                int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
-            )
-            r = int(hashed[:3]) % 255
-            g = int(hashed[3:6]) % 255
-            b = int(hashed[6:]) % 255
-
-            return discord.Color.from_rgb(r, g, b)
-
-        def in_cached(text: str) -> bool:
-            if text in self._cached_messages:
-                return True
-            else:
-                self._cached_messages.append(text)
-                if len(self._cached_messages) >= 30:
-                    self._cached_messages = self._cached_messages[:30]
-                return False
 
         config = await self.config.all_guilds()
 
@@ -163,13 +145,13 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        if in_cached(data["player"] + "|" + data["msg"]):
+        if self.in_cached(data["player"] + "|" + data["msg"]):
             return
 
         embed = discord.Embed(
             title=data["player"],
             description=data["msg"],
-            color=string2discordColor(data["player"]),
+            color=self.string2discordColor(data["player"]),
         )
         embed.set_footer(text=data["time"])
 
@@ -180,6 +162,45 @@ class twBNSchat(commands.Cog):
                 await channel.send(embed=embed)
             except Exception:
                 pass
+
+    async def text_announce(self, data_l: list):
+
+        config = await self.config.all_guilds()
+
+        guild_queue = [
+            guild_id for guild_id in config if config[guild_id]["toggle"] is True
+        ]
+        if not len(guild_queue):
+            return
+
+        data_l = [data for data in data_l if self.in_cached(data["player"] + "|" + data["msg"])]
+
+        joinee = [f'{data["time"]} {data["player"]} : {data["msg"]}' for data in data_l]
+
+        await self.test_send("\n".join(joinee))
+
+
+
+
+
+    def string2discordColor(self, text: str) -> str:
+        hashed = str(
+            int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
+        )
+        r = int(hashed[:3]) % 255
+        g = int(hashed[3:6]) % 255
+        b = int(hashed[6:]) % 255
+
+        return discord.Color.from_rgb(r, g, b)
+
+    def in_cached(self, text: str) -> bool:
+        if text in self._cached_messages:
+            return True
+        else:
+            self._cached_messages.append(text)
+            if len(self._cached_messages) >= 30:
+                self._cached_messages = self._cached_messages[:30]
+            return False
 
     @commands.group(name="twbnschat")
     @commands.admin_or_permissions(manage_guild=True)
