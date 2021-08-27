@@ -138,10 +138,10 @@ class twBNSchat(commands.Cog):
             except Exception:
                 pass
         if output:
-            for relay in announce_queue:
-                await self.test_send("relay")
+            # for relay in announce_queue:
+            #     await self.test_send("relay")
 
-                await self.channel_announce(relay)
+            #     await self.channel_announce(relay)
             await self.test_send("text")
             await self.text_announce(announce_queue)
 
@@ -184,12 +184,6 @@ class twBNSchat(commands.Cog):
             return
 
         data_l = [data for data in data_l if not self.in_cached(data["player"] + "|" + data["msg"])]
-
-        # dataparse = []
-
-        # for data in data_l:
-        #     if not self.in_cached(data["player"] + "|" + data["msg"]):
-        #         dataparse.append(data)
 
         joinee = [f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in data_l]
 
