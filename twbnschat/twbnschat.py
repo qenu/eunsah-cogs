@@ -98,9 +98,9 @@ class twBNSchat(commands.Cog):
         await self.test_send("start")
         await self.bot.wait_until_red_ready()
         while self._enabled:
-            await self.test_send("in loop")
+            await self.test_send("fetching wss")
             await self.websocket_fetch()
-            await asyncio.sleep(5)
+            await asyncio.sleep(4.2)
 
     async def websocket_fetch(self):
         announce_queue = []
@@ -108,41 +108,32 @@ class twBNSchat(commands.Cog):
 
         if 10 < len(log) or len(log) <= 0:
             return
-        await self.test_send(f"got log, len: {len(log)}")
 
         output = False
 
         for wsData in log:
-            await self.test_send(str(wsData))
             try:
                 wsJson = json.loads(wsData["message"])
                 if (
                     wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                     and wsJson["message"]["params"]["response"]["payloadData"][0] == "4"
                 ):
-                    await self.test_send(f"start processing")
-
                     wsParsed = json.loads(
                         wsJson["message"]["params"]["response"]["payloadData"][2:]
                     )
                     await self.test_send(f"processed log: {wsParsed}")
                     if wsParsed[0] == "getStatus":
-                        await self.test_send("status")
+                        await self.test_send("got status")
                         await self.config.accountA.set(wsParsed[1]["accountA"])
                         await self.config.accountB.set(wsParsed[1]["accountB"])
                         return
                     if wsParsed[0] == "getInquiry":
-                        await self.test_send("inquiry")
+                        await self.test_send("got inquiry")
                         announce_queue.append(wsParsed[1])
                         output = True
             except Exception:
                 pass
         if output:
-            # for relay in announce_queue:
-            #     await self.test_send("relay")
-
-            #     await self.channel_announce(relay)
-            await self.test_send("text")
             await self.text_announce(announce_queue)
 
     async def channel_announce(self, data: dict):
@@ -185,7 +176,7 @@ class twBNSchat(commands.Cog):
 
         data_l = [data for data in data_l if not self.in_cached(data["player"] + "|" + data["msg"])]
 
-        joinee = [f'{data["time"]} **{data["player"]}** << {data["msg"]}' for data in data_l]
+        joinee = [f'{data["time"]} **{data["player"]}** $ `{data["msg"]}`' for data in data_l]
         if len(joinee):
             await self.test_send("\n".join(joinee))
 
