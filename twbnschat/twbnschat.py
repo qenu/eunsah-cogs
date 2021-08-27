@@ -137,7 +137,7 @@ class twBNSchat(commands.Cog):
 
     async def channel_announce(self, data: dict):
 
-        def string2discordColor(self, text: str) -> str:
+        def string2discordColor(text: str) -> str:
             hashed = str(
                 int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
             )
@@ -147,7 +147,7 @@ class twBNSchat(commands.Cog):
 
             return discord.Color.from_rgb(r, g, b)
 
-        def in_cached(self, text: str) -> bool:
+        def in_cached(text: str) -> bool:
             if text in self._cached_messages:
                 return True
             else:
