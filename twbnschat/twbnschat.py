@@ -100,13 +100,13 @@ class twBNSchat(commands.Cog):
         while self._enabled:
             await self.test_send("in loop")
             await self.websocket_fetch()
-            await asyncio.sleep(8)
+            await asyncio.sleep(5)
 
     async def websocket_fetch(self):
         announce_queue = []
         log = self.driver.get_log("performance")
 
-        if 30 < len(log) or len(log) <= 0:
+        if 10 < len(log) or len(log) <= 0:
             return
         await self.test_send(f"got log, len: {len(log)}")
 
