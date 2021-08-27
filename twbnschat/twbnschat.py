@@ -142,6 +142,7 @@ class twBNSchat(commands.Cog):
                 await self.test_send("relay")
 
                 await self.channel_announce(relay)
+            await self.test_send("text")
             await self.text_announce(announce_queue)
 
     async def channel_announce(self, data: dict):
