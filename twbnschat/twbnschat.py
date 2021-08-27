@@ -117,7 +117,7 @@ class twBNSchat(commands.Cog):
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
                 and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
             ):
-                await self.test_send("processed log")
+                await self.test_send(f"processed log: {wsParsed}")
 
                 wsParsed = json.loads(
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
@@ -149,12 +149,18 @@ class twBNSchat(commands.Cog):
         if self.in_cached(data["player"] + "|" + data["msg"]):
             return
 
+        await self.test_send("sending 2")
+
+
         embed = discord.Embed(
             title=data["player"],
             description=data["msg"],
             color=self.string2discordColor(data["player"]),
         )
         embed.set_footer(text=data["time"])
+
+        await self.test_send("sending3")
+
         for guild_id in guild_queue:
             try:
                 guild = self.bot.get_guild(guild_id)
@@ -162,6 +168,8 @@ class twBNSchat(commands.Cog):
                 await channel.send(embed=embed)
             except Exception:
                 pass
+        await self.test_send("sending4")
+
 
     def string2discordColor(self, text: str) -> str:
         hashed = str(
