@@ -106,10 +106,10 @@ class twBNSchat(commands.Cog):
         announce_queue = []
 
         self.driver.get_log("performance")
+        await self.test_send("ws fetch") # <<< ================================
 
         if len(log) == 0:
             return
-        await self.test_send("ws fetch") # <<< ================================
         for wsData in log:
             wsJson = json.loads(wsData["message"])
             if (
