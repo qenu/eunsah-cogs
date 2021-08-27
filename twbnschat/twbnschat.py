@@ -183,13 +183,11 @@ class twBNSchat(commands.Cog):
             if self.in_cached(data["player"] + "|" + data["msg"]):
                 dataparse.append(data)
 
-        joinee = [f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in dataparse]
+        joinee = [
+            f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in dataparse
+        ]
 
         await self.test_send("\n".join(joinee))
-
-
-
-
 
     def string2discordColor(self, text: str) -> str:
         hashed = str(
