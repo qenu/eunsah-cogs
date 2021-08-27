@@ -99,7 +99,6 @@ class twBNSchat(commands.Cog):
         await self.bot.wait_until_red_ready()
         while self._enabled:
             await self.test_send("in loop")
-
             await self.websocket_fetch()
             await asyncio.sleep(8)
 
@@ -113,25 +112,28 @@ class twBNSchat(commands.Cog):
 
         for wsData in log:
             await self.test_send(str(wsData))
-            wsJson = json.loads(wsData["message"])
-            if (
-                wsJson["message"]["method"] == "Network.webSocketFrameReceived"
-                and wsJson["message"]["params"]["response"]["payloadData"][0] == "4"
-            ):
-                await self.test_send(f"start processing")
+            try:
+                wsJson = json.loads(wsData["message"])
+                if (
+                    wsJson["message"]["method"] == "Network.webSocketFrameReceived"
+                    and wsJson["message"]["params"]["response"]["payloadData"][0] == "4"
+                ):
+                    await self.test_send(f"start processing")
 
-                wsParsed = json.loads(
-                    wsJson["message"]["params"]["response"]["payloadData"][2:]
-                )
-                await self.test_send(f"processed log: {wsParsed}")
-                if wsParsed[0] == "getStatus":
-                    await self.test_send("status")
-                    await self.config.accountA.set(wsParsed[1]["accountA"])
-                    await self.config.accountB.set(wsParsed[1]["accountB"])
-                    return
-                if wsParsed[0] == "getInquiry":
-                    await self.test_send("inquiry")
-                    announce_queue.append(wsParsed[1])
+                    wsParsed = json.loads(
+                        wsJson["message"]["params"]["response"]["payloadData"][2:]
+                    )
+                    await self.test_send(f"processed log: {wsParsed}")
+                    if wsParsed[0] == "getStatus":
+                        await self.test_send("status")
+                        await self.config.accountA.set(wsParsed[1]["accountA"])
+                        await self.config.accountB.set(wsParsed[1]["accountB"])
+                        return
+                    if wsParsed[0] == "getInquiry":
+                        await self.test_send("inquiry")
+                        announce_queue.append(wsParsed[1])
+            except Exception:
+                pass
 
         for relay in announce_queue:
             await self.test_send("relay")
