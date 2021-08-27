@@ -102,13 +102,8 @@ class twBNSchat(commands.Cog):
 
     async def websocket_fetch(self):
         announce_queue = []
-        foo = functools.partial(self.driver.get_log("performance"))
-        task = self.bot.loop.run_in_executor(log, foo)
-        try:
-            await asyncio.wait_for(task, timeout=10)
-        except TimeoutError:
-            log.debug("driver.get_log timeout")
-            return
+        log = self.driver.get_log("performance")
+
         if len(log) == 0:
             return
         for wsData in log:
