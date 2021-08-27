@@ -107,7 +107,7 @@ class twBNSchat(commands.Cog):
         announce_queue = []
         log = self.driver.get_log("performance")
 
-        if len(log) == 0:
+        if 130 < len(log) < 0:
             return
         await self.test_send(f"got log, len: {len(log)}")
 
