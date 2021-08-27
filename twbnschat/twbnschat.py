@@ -95,10 +95,10 @@ class twBNSchat(commands.Cog):
         self._sync = self.bot.loop.create_task(self.start_fetch())
 
     async def start_fetch(self):
-        await self.test_send("start")
+        # await self.test_send("start")
         await self.bot.wait_until_red_ready()
         while self._enabled:
-            await self.test_send("twbnschat requesting...")
+            # await self.test_send("twbnschat requesting...")
             await self.websocket_fetch()
             await asyncio.sleep(6.4)
 
@@ -121,14 +121,14 @@ class twBNSchat(commands.Cog):
                     wsParsed = json.loads(
                         wsJson["message"]["params"]["response"]["payloadData"][2:]
                     )
-                    await self.test_send(f"processed log: {wsParsed}")
+                    # await self.test_send(f"processed log: {wsParsed}")
                     if wsParsed[0] == "getStatus":
-                        await self.test_send("got status")
+                        # await self.test_send("got status")
                         await self.config.accountA.set(wsParsed[1]["accountA"])
                         await self.config.accountB.set(wsParsed[1]["accountB"])
                         return
                     if wsParsed[0] == "getInquiry":
-                        await self.test_send("got inquiry")
+                        # await self.test_send("got inquiry")
                         announce_queue.append(wsParsed[1])
                         output = True
             except Exception:
@@ -293,14 +293,6 @@ class twBNSchat(commands.Cog):
         await asyncio.sleep(3)
 
         await ctx.send("re-initializing driver")
-
-        # foo = functools.partial(self.initialize)
-        # task = self.bot.loop.run_in_executor(None, foo)
-        # try:
-        #     await asyncio.wait_for(task, timeout=60)
-        # except asyncio.TimeoutError:
-        #     await ctx.send("initialization timeout")
-        #     return
         await self.initialize()
         await ctx.send("done")
 
