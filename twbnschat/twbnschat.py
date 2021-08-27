@@ -128,10 +128,9 @@ class twBNSchat(commands.Cog):
                 if wsParsed[0] == "getInquiry":
                     await self.test_send("inquiry")
                     announce_queue.append(wsParsed[1])
-                    # await self.channel_announce(wsParsed[1])
 
         for relay in announce_queue:
-            await self.test_send("send logs")
+            await self.test_send("relay")
 
             await self.channel_announce(relay)
 
@@ -156,26 +155,16 @@ class twBNSchat(commands.Cog):
                     self._cached_messages = self._cached_messages[:30]
                 return False
 
-        await self.test_send("sending")
-
         config = await self.config.all_guilds()
-        await self.test_send("sending1.1")
 
         guild_queue = [
             guild_id for guild_id in config if config[guild_id]["toggle"] is True
         ]
-        await self.test_send("sending1.2")
-
         if not len(guild_queue):
             return
-        await self.test_send("sending1.3")
-
 
         if in_cached(data["player"] + "|" + data["msg"]):
             return
-
-        await self.test_send("sending 2")
-
 
         embed = discord.Embed(
             title=data["player"],
@@ -184,8 +173,6 @@ class twBNSchat(commands.Cog):
         )
         embed.set_footer(text=data["time"])
 
-        await self.test_send("sending3")
-
         for guild_id in guild_queue:
             try:
                 guild = self.bot.get_guild(guild_id)
@@ -193,7 +180,6 @@ class twBNSchat(commands.Cog):
                 await channel.send(embed=embed)
             except Exception:
                 pass
-        await self.test_send("sending4")
 
     @commands.group(name="twbnschat")
     @commands.admin_or_permissions(manage_guild=True)
