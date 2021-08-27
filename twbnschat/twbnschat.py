@@ -110,6 +110,8 @@ class twBNSchat(commands.Cog):
             return
         await self.test_send(f"got log, len: {len(log)}")
 
+        output = False
+
         for wsData in log:
             await self.test_send(str(wsData))
             try:
@@ -132,14 +134,15 @@ class twBNSchat(commands.Cog):
                     if wsParsed[0] == "getInquiry":
                         await self.test_send("inquiry")
                         announce_queue.append(wsParsed[1])
+                        output = True
             except Exception:
                 pass
+        if output:
+            for relay in announce_queue:
+                await self.test_send("relay")
 
-        for relay in announce_queue:
-            await self.test_send("relay")
-
-            await self.channel_announce(relay)
-        await self.text_announce(announce_queue)
+                await self.channel_announce(relay)
+            await self.text_announce(announce_queue)
 
     async def channel_announce(self, data: dict):
 
