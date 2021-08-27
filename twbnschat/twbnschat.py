@@ -152,7 +152,7 @@ class twBNSchat(commands.Cog):
                 return True
             else:
                 self._cached_messages.append(text)
-                if len(self._cached_messages >= 30):
+                if len(self._cached_messages) >= 30:
                     self._cached_messages = self._cached_messages[:30]
                 return False
 
