@@ -177,7 +177,7 @@ class twBNSchat(commands.Cog):
 
         data_l = [data for data in data_l if self.in_cached(data["player"] + "|" + data["msg"])]
 
-        joinee = [f'{data["time"]} {data["player"]} : {data["msg"]}' for data in data_l]
+        joinee = [f'{data["time"]} **{data["player"]}** : `{data["msg"]}`' for data in data_l]
 
         await self.test_send("\n".join(joinee))
 
