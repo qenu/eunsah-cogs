@@ -98,7 +98,7 @@ class twBNSchat(commands.Cog):
         await self.test_send("start")
         await self.bot.wait_until_red_ready()
         while self._enabled:
-            await self.test_send("fetching wss")
+            # await self.test_send("fetching wss")
             await self.websocket_fetch()
             await asyncio.sleep(4.2)
 
