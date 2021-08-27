@@ -116,7 +116,7 @@ class twBNSchat(commands.Cog):
             wsJson = json.loads(wsData["message"])
             if (
                 wsJson["message"]["method"] == "Network.webSocketFrameReceived"
-                and wsJson["message"]["params"]["response"]["payloadData"][:2] == "42"
+                and wsJson["message"]["params"]["response"]["payloadData"][0] == "4"
             ):
                 await self.test_send(f"start processing")
 
