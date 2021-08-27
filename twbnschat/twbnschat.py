@@ -137,13 +137,13 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        if await self.in_cached(data["player"] + "|" + data["msg"]):
+        if self.in_cached(data["player"] + "|" + data["msg"]):
             return
 
         embed = discord.Embed(
             title=data["player"],
             description=data["msg"],
-            color=await self.string2discordColor(data["player"]),
+            color=self.string2discordColor(data["player"]),
         )
         embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
@@ -154,7 +154,7 @@ class twBNSchat(commands.Cog):
             except Exception:
                 pass
 
-    async def string2discordColor(self, text: str) -> str:
+    def string2discordColor(self, text: str) -> str:
         hashed = str(
             int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
         )
@@ -164,7 +164,7 @@ class twBNSchat(commands.Cog):
 
         return discord.Color.from_rgb(r, g, b)
 
-    async def in_cached(self, text: str) -> bool:
+    def in_cached(self, text: str) -> bool:
         if text in self._cached_messages:
             return True
         else:
