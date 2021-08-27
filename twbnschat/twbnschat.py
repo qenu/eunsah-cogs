@@ -182,7 +182,7 @@ class twBNSchat(commands.Cog):
         dataparse = []
 
         for data in data_l:
-            if self.in_cached(data["player"] + "|" + data["msg"]):
+            if not self.in_cached(data["player"] + "|" + data["msg"]):
                 dataparse.append(data)
 
         joinee = [f'{data["time"]} **{data["player"]}** `{data["msg"]}`' for data in dataparse]
