@@ -98,9 +98,9 @@ class twBNSchat(commands.Cog):
         await self.test_send("start")
         await self.bot.wait_until_red_ready()
         while self._enabled:
-            # await self.test_send("fetching wss")
+            await self.test_send("twbnschat requesting...")
             await self.websocket_fetch()
-            await asyncio.sleep(4.2)
+            await asyncio.sleep(6.4)
 
     async def websocket_fetch(self):
         announce_queue = []
@@ -178,7 +178,13 @@ class twBNSchat(commands.Cog):
 
         joinee = [f'`{data["time"]}`  **{data["player"]}**  `{data["msg"]}`' for data in data_l]
         if len(joinee):
-            await self.test_send("\n".join(joinee))
+            for guild_id in guild_queue:
+                try:
+                    guild = self.bot.get_guild(guild_id)
+                    channel = guild.get_channel(int(config[guild_id]["channel"]))
+                    await channel.send("\n".join(joinee))
+                except Exception:
+                    pass
 
     def string2discordColor(self, text: str) -> str:
         hashed = str(
