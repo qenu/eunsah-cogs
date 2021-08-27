@@ -222,7 +222,7 @@ class twBNSchat(commands.Cog):
             config = await self.config.guild(guild).all()
 
             embed = discord.Embed(
-                color=await ctx.embed_color(), title="twB&S F8 chat settings"
+                color=await ctx.embed_color(), title="TwB&S F8 chat settings"
             )
             embed.add_field(name="Enabled", value=config["toggle"])
 
@@ -254,7 +254,7 @@ class twBNSchat(commands.Cog):
         if channel is None:
             await self.enabled(ctx, False)
         await ctx.send(
-            f"channel for twbnschat has been {'unset' if channel is None else f'set at {channel.mention}'}."
+            f"Channel for twbnschat has been {'unset' if channel is None else f'set at {channel.mention}'}."
         )
 
     @twbnschat.command(name="enabled")
@@ -270,10 +270,10 @@ class twBNSchat(commands.Cog):
         if boo and await self.config.guild(guild).channel() == None:
             await self.config.guild(guild).channel.set(ctx.channel.id)
             await ctx.send(
-                f"channel for twbnschat has been set to {ctx.channel.mention}"
+                f"Channel for twbnschat has been set to {ctx.channel.mention}."
             )
 
-        await ctx.send(f"twbnschat has been {'enabled' if boo else f'disabled'}.")
+        await ctx.send(f"Twbnschat has been {'enabled' if boo else f'disabled'}.")
 
     @twbnschat.command(name="checkcache")
     @commands.is_owner()
@@ -286,7 +286,23 @@ class twBNSchat(commands.Cog):
     @commands.is_owner()
     async def refresh(self, ctx: commands.Context):
         """refreshes selenium connection"""
-        await ctx.send("refresing selenium connection")
+        await self.bot.wait_until_red_ready()
+
+        await ctx.send("Stopping twbnschat...")
+
+        await self.stop(ctx)
+
+        await asyncio.sleep(5)
+
+        await self.start(ctx)
+
+        await ctx.send("Done.")
+
+
+    @twbnschat.command(name="stop")
+    @commands.is_owner()
+    async def stop(self, ctx: commands.Context):
+        '''stops selenium and executed loop'''
         self._enabled = False
         if self._sync:
             self._sync.cancel()
@@ -296,19 +312,15 @@ class twBNSchat(commands.Cog):
             self.driver.quit()
         except Exception:
             pass
-
-        await asyncio.sleep(3)
-
-        await ctx.send("re-initializing driver")
-        await self.initialize()
-        await ctx.send("done")
+        await ctx.send(content="Twbnschat stopped.")
 
     @twbnschat.command(name="start")
     @commands.is_owner()
-    async def url(self, ctx: commands.Context):
+    async def start(self, ctx: commands.Context):
+        '''initialize selenium for chat fetching'''
         #  await self.config
         self.bot.loop.create_task(self.initialize())
-        await ctx.tick()
+        await ctx.send(content="Twbnschat running...")
 
     @twbnschat.command(name="status")
     async def status(self, ctx: commands.Context):
