@@ -123,16 +123,22 @@ class twBNSchat(commands.Cog):
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
                 if wsParsed[0] == "getStatus":
+                    await self.test_send("status")
                     await self.config.accountA.set(wsParsed[1]["accountA"])
                     await self.config.accountB.set(wsParsed[1]["accountB"])
                 if wsParsed[0] == "getInquiry":
+                    await self.test_send("inquiry")
                     announce_queue.append(wsParsed[1])
                     # await self.channel_announce(wsParsed[1])
 
         for relay in announce_queue:
+            await self.test_send("send logs")
+
             await self.channel_announce(relay)
 
     async def channel_announce(self, data: dict):
+        await self.test_send("sending")
+
         config = await self.config.all_guilds()
         guild_queue = [
             guild_id for guild_id in config if config[guild_id]["toggle"] is True
