@@ -1,4 +1,4 @@
-import twbnschat
+import functools
 from typing import Literal, Optional
 import json
 import logging
@@ -52,7 +52,7 @@ class twBNSchat(commands.Cog):
         self.config.register_guild(**default_guild)
         self.config.register_global(**default_global)
 
-        self.initialize()
+        asyncio.create_task(self.initialize())
 
     async def red_delete_data_for_user(
         self, *, requester: RequestType, user_id: int
@@ -68,7 +68,8 @@ class twBNSchat(commands.Cog):
         log.debug("Stopped selenium.")
         log.debug("twBNSchat unloaded.")
 
-    def initialize(self):
+    async def initialize(self):
+        await self.bot.wait_until_red_ready()
 
         driver_options = webdriver.ChromeOptions()
         driver_options.add_argument("--mute-audio")
@@ -101,7 +102,13 @@ class twBNSchat(commands.Cog):
 
     async def websocket_fetch(self):
         announce_queue = []
-        log = self.driver.get_log("performance")
+        fake_task = functools.partial(self.driver.get_log("performance"))
+        task = self.bot.loop.run_in_executor(None, fake_task)
+        try:
+            await asyncio.wait_for(task, timeout=10)
+        except TimeoutError:
+            log.debug("driver.get_log timeout")
+            return
         if len(log) == 0:
             return
         for wsData in log:
@@ -113,7 +120,7 @@ class twBNSchat(commands.Cog):
                 wsParsed = json.loads(
                     wsJson["message"]["params"]["response"]["payloadData"][2:]
                 )
-                if wsParsed[0] == 'getStatus':
+                if wsParsed[0] == "getStatus":
                     await self.config.accountA.set(wsParsed[1]["accountA"])
                     await self.config.accountB.set(wsParsed[1]["accountB"])
                 if wsParsed[0] == "getInquiry":
@@ -131,13 +138,13 @@ class twBNSchat(commands.Cog):
         if not len(guild_queue):
             return
 
-        if self.in_cached(data["player"] + "|" + data["msg"]):
+        if await self.in_cached(data["player"] + "|" + data["msg"]):
             return
 
         embed = discord.Embed(
             title=data["player"],
             description=data["msg"],
-            color=self.string2discordColor(data["player"]),
+            color=await self.string2discordColor(data["player"]),
         )
         embed.set_footer(text=data["time"])
         for guild_id in guild_queue:
@@ -148,7 +155,7 @@ class twBNSchat(commands.Cog):
             except Exception:
                 pass
 
-    def string2discordColor(self, text: str) -> str:
+    async def string2discordColor(self, text: str) -> str:
         hashed = str(
             int(hashlib.sha1(text.encode("utf-8")).hexdigest(), 16) % (10 ** 9)
         )
@@ -158,13 +165,13 @@ class twBNSchat(commands.Cog):
 
         return discord.Color.from_rgb(r, g, b)
 
-    def in_cached(self, text: str) -> bool:
+    async def in_cached(self, text: str) -> bool:
         if text in self._cached_messages:
             return True
         else:
             self._cached_messages.append(text)
-            while len(self._cached_messages) >= 30:
-                self._cached_messages.pop(0)
+            if len(self._cached_messages >= 30):
+                self._cached_messages = self._cached_messages[:30]
             return False
 
     @commands.group(name="twbnschat")
@@ -256,7 +263,14 @@ class twBNSchat(commands.Cog):
 
         await ctx.send("re-initializing driver")
 
-        self.initialize()
+        # fake_task = functools.partial(self.initialize)
+        # task = self.bot.loop.run_in_executor(None, fake_task)
+        # try:
+        #     await asyncio.wait_for(task, timeout=60)
+        # except asyncio.TimeoutError:
+        #     await ctx.send("initialization timeout")
+        #     return
+        await self.initialize()
         await ctx.send("done")
 
     @twbnschat.command(name="url")
@@ -264,17 +278,16 @@ class twBNSchat(commands.Cog):
     async def url(self, ctx: commands.Context, url: Optional[str] = None):
         await self.config
 
-
     @twbnschat.command(name="status")
     async def status(self, ctx: commands.Context):
         """shows the last obtained status from site"""
-        emb = discord.Embed(description = "Last Reported")
+        emb = discord.Embed(description="Last Reported")
         emb.add_field(name="accountA", value=await self.config.accountA())
         emb.add_field(name="accountB", value=await self.config.accountB())
 
-        await ctx.send(embed = emb)
+        await ctx.send(embed=emb)
 
-    async def test_send(self, text:str):
+    async def test_send(self, text: str):
         g = self.bot.get_guild(247820107760402434)
         c = g.get_channel(879630016856596521)
-        await c.send(content= text)
+        await c.send(content=text)
