@@ -260,10 +260,10 @@ class twBNSchat(commands.Cog):
         )
 
     @twbnschat.command(name="enabled")
-    async def enabled(self, ctx: commands.Context, boo: bool):
+    async def enabled(self, ctx: commands.Context, on_off: bool):
         """enables the channel for receiving
 
-        Usage: [p]twbnschat enabled [True | False]
+        Usage: [p]twbnschat enabled [on_off]
         """
         guild: discord.Guild = ctx.guild
 
@@ -277,27 +277,25 @@ class twBNSchat(commands.Cog):
 
         await ctx.send(f"Twbnschat has been {'enabled' if boo else f'disabled'}.")
 
-    @twbnschat.command(name="checkcache")
+    @twbnschat.command(name="alive")
     @commands.is_owner()
-    async def checkcache(self, ctx: commands.Context):
-        """(debug) function used to view cached messages"""
-        await ctx.send(content=self._cached_messages)
-        await ctx.send(content=self.driver.current_url)
+    async def alive(self, ctx: commands.Context):
+        """(debug) function to check driver status"""
+        try:
+            self.driver.execute(Command.Status)
+            await ctx.send("Driver is alive.")
+        except Exception:
+            await ctx.send("Driver is dead.")
 
     @twbnschat.command(name="refresh")
     @commands.is_owner()
     async def refresh(self, ctx: commands.Context):
         """refreshes selenium connection"""
         await self.bot.wait_until_red_ready()
-
         await ctx.send("Stopping twbnschat...")
-
         await self.stop(ctx)
-
         await asyncio.sleep(5)
-
         await self.start(ctx)
-
         await ctx.send("Done.")
 
     @twbnschat.command(name="stop")
