@@ -1,4 +1,3 @@
-import functools
 from typing import Literal, Optional
 import json
 import logging
@@ -112,11 +111,12 @@ class twBNSchat(commands.Cog):
         output = False
 
         for wsData in log:
+
             try:
                 wsJson = json.loads(wsData["message"])
                 if (
                     wsJson["message"]["method"] == "Network.webSocketFrameReceived"
-                    and wsJson["message"]["params"]["response"]["payloadData"][0] == "4"
+                    and len(wsJson["message"]["params"]["response"]["payloadData"]) > 6
                 ):
                     wsParsed = json.loads(
                         wsJson["message"]["params"]["response"]["payloadData"][2:]
@@ -209,7 +209,9 @@ class twBNSchat(commands.Cog):
         else:
             self._cached_messages.append(text)
             if len(self._cached_messages) >= 30:
-                self._cached_messages = self._cached_messages[(30-len(self._cached_messages)):]
+                self._cached_messages = self._cached_messages[
+                    (30 - len(self._cached_messages)) :
+                ]
             return False
 
     @commands.group(name="twbnschat")
@@ -298,11 +300,10 @@ class twBNSchat(commands.Cog):
 
         await ctx.send("Done.")
 
-
     @twbnschat.command(name="stop")
     @commands.is_owner()
     async def stop(self, ctx: commands.Context):
-        '''stops selenium and executed loop'''
+        """stops selenium and executed loop"""
         self._enabled = False
         if self._sync:
             self._sync.cancel()
@@ -317,7 +318,7 @@ class twBNSchat(commands.Cog):
     @twbnschat.command(name="start")
     @commands.is_owner()
     async def start(self, ctx: commands.Context):
-        '''initialize selenium for chat fetching'''
+        """initialize selenium for chat fetching"""
         #  await self.config
         self.bot.loop.create_task(self.initialize())
         await ctx.send(content="Twbnschat running...")
