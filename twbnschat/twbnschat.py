@@ -284,8 +284,8 @@ class twBNSchat(commands.Cog):
         try:
             self.driver.execute(Command.Status)
             await ctx.send("Driver is alive.")
-        except Exception:
-            await ctx.send("Driver is dead.")
+        except Exception as err:
+            await ctx.send(f"Driver is dead. Reason {err}")
 
     @twbnschat.command(name="refresh")
     @commands.is_owner()
