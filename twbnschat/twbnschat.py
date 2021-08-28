@@ -283,7 +283,7 @@ class twBNSchat(commands.Cog):
     async def alive(self, ctx: commands.Context):
         """(debug) function to check driver status"""
         try:
-            self.driver.execute(Command.Status)
+            self.driver.execute(Command.STATUS)
             await ctx.send("Driver is alive.")
         except Exception as err:
             await ctx.send(f"Driver is dead. Reason {err}")
