@@ -52,7 +52,7 @@ class twBNSchat(commands.Cog):
         self.config.register_guild(**default_guild)
         self.config.register_global(**default_global)
 
-        bot.loop.create_task(self.initialize())
+        # bot.loop.create_task(self.initialize())
 
     async def red_delete_data_for_user(
         self, *, requester: RequestType, user_id: int
@@ -303,10 +303,12 @@ class twBNSchat(commands.Cog):
         await self.initialize()
         await ctx.send("done")
 
-    @twbnschat.command(name="url")
+    @twbnschat.command(name="start")
     @commands.is_owner()
-    async def url(self, ctx: commands.Context, url: Optional[str] = None):
-        await self.config
+    async def url(self, ctx: commands.Context):
+        #  await self.config
+        self.bot.loop.create_task(self.initialize())
+        await ctx.tick()
 
     @twbnschat.command(name="status")
     async def status(self, ctx: commands.Context):
