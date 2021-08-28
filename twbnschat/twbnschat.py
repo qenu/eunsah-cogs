@@ -5,6 +5,7 @@ import asyncio
 import hashlib
 
 from selenium import webdriver
+from selenium.webdriver.remote.command import Command
 
 import discord
 from redbot.core import commands
@@ -267,15 +268,15 @@ class twBNSchat(commands.Cog):
         """
         guild: discord.Guild = ctx.guild
 
-        await self.config.guild(guild).toggle.set(boo)
+        await self.config.guild(guild).toggle.set(on_off)
 
-        if boo and await self.config.guild(guild).channel() == None:
+        if on_off and await self.config.guild(guild).channel() == None:
             await self.config.guild(guild).channel.set(ctx.channel.id)
             await ctx.send(
                 f"Channel for twbnschat has been set to {ctx.channel.mention}."
             )
 
-        await ctx.send(f"Twbnschat has been {'enabled' if boo else f'disabled'}.")
+        await ctx.send(f"Twbnschat has been {'enabled' if on_off else f'disabled'}.")
 
     @twbnschat.command(name="alive")
     @commands.is_owner()
