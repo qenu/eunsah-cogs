@@ -334,7 +334,7 @@ class Tmserver(commands.Cog):
         s_runtime = (time() - s_start) * 1000
 
         return (
-            round(float(s_runtime) - 130, 2)
+            round(float(s_runtime) - 120, 2)
             if offset is False
             else round(float(s_runtime), 2)
         )
