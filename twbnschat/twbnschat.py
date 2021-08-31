@@ -29,6 +29,7 @@ class twBNSchat(commands.Cog):
         self._sync = False
         self._enabled = True
         # self._status = ('-', '-')
+        self.driver = None
         self._cached_messages = []
 
         self.config = Config.get_conf(
