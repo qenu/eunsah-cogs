@@ -96,7 +96,7 @@ class twBNSchat(commands.Cog):
                 executable_path=r"/home/qenv_dev/chromedriver",
             )
         except Exception as err:
-            await self.test_send("Webdriver Error: {err}")
+            await self.test_send(f"Webdriver Error: {err}")
 
         await self.test_send("driver prepared")
 
@@ -105,7 +105,7 @@ class twBNSchat(commands.Cog):
                 "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
             )
         except Exception as err:
-            await self.test_send("Driver get Error: {err}")
+            await self.test_send(f"Driver get Error: {err}")
         
         await self.test_send(f"driver print: {self.driver}")
         # if self.driver:
