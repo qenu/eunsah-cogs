@@ -71,6 +71,8 @@ class twBNSchat(commands.Cog):
     async def initialize(self):
         await self.bot.wait_until_red_ready()
 
+        await self.test_send("red is ready")
+
         driver_options = webdriver.ChromeOptions()
         driver_options.add_argument("--mute-audio")
         driver_options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -83,15 +85,27 @@ class twBNSchat(commands.Cog):
         driver_caps = webdriver.DesiredCapabilities.CHROME.copy()
         driver_caps["goog:loggingPrefs"] = {"performance": "ALL"}
 
+        await self.test_send("chrome options ready")
+
         log.debug("Initializing selenium...")
-        self.driver = webdriver.Chrome(
-            options=driver_options,
-            desired_capabilities=driver_caps,
-            executable_path=r"/home/qenv_dev/chromedriver",
-        )
-        self.driver.get(
-            "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
-        )
+
+        try:
+            self.driver = webdriver.Chrome(
+                options=driver_options,
+                desired_capabilities=driver_caps,
+                executable_path=r"/home/qenv_dev/chromedriver",
+            )
+        except Exception as err:
+            await self.test_send("Webdriver Error: {err}")
+
+        await self.test_send("driver prepared")
+
+        try:
+            self.driver.get(
+                "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
+            )
+        except Exception as err:
+            await self.test_send("Driver get Error: {err}")
         
         await self.test_send(f"driver print: {self.driver}")
         # if self.driver:
@@ -323,7 +337,7 @@ class twBNSchat(commands.Cog):
         """initialize selenium for chat fetching"""
         #  await self.config
         self.bot.loop.create_task(self.initialize())
-        await ctx.send(content="Twbnschat running...")
+        await self.alive(ctx)
 
     @twbnschat.command(name="status")
     async def status(self, ctx: commands.Context):
