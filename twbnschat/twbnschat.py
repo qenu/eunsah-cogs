@@ -71,8 +71,6 @@ class twBNSchat(commands.Cog):
     async def initialize(self):
         await self.bot.wait_until_red_ready()
 
-        await self.test_send("red is ready")
-
         driver_options = webdriver.ChromeOptions()
         driver_options.add_argument("--mute-audio")
         driver_options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -85,8 +83,6 @@ class twBNSchat(commands.Cog):
         driver_caps = webdriver.DesiredCapabilities.CHROME.copy()
         driver_caps["goog:loggingPrefs"] = {"performance": "ALL"}
 
-        await self.test_send("chrome options ready")
-
         log.debug("Initializing selenium...")
 
         try:
@@ -98,8 +94,6 @@ class twBNSchat(commands.Cog):
         except Exception as err:
             await self.test_send(f"Webdriver Error: {err}")
 
-        await self.test_send("driver prepared")
-
         try:
             self.driver.get(
                 "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
@@ -107,9 +101,8 @@ class twBNSchat(commands.Cog):
         except Exception as err:
             await self.test_send(f"Driver get Error: {err}")
         
-        await self.test_send(f"driver print: {self.driver}")
-        # if self.driver:
-        # self._sync = self.bot.loop.create_task(self.start_fetch())
+        if self.driver:
+            self._sync = self.bot.loop.create_task(self.start_fetch())
 
     async def start_fetch(self):
         # await self.test_send("start")
@@ -336,7 +329,11 @@ class twBNSchat(commands.Cog):
     async def start(self, ctx: commands.Context):
         """initialize selenium for chat fetching"""
         #  await self.config
-        self.bot.loop.create_task(self.initialize())
+        if self.driver is not None:
+            self.bot.loop.create_task(self.initialize())
+        else:
+            await ctx.send(f"Driver is already running")
+        await asyncio.sleep(4)
         await self.alive(ctx)
 
     @twbnschat.command(name="status")
