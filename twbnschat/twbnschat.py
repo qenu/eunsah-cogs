@@ -93,7 +93,7 @@ class twBNSchat(commands.Cog):
             self.driver = webdriver.Chrome(
                 options=driver_options,
                 desired_capabilities=driver_caps,
-                executable_path=r"/home/qenu_dev/bin/",
+                executable_path=r"/home/qenu_dev/bin/chromedriver",
             )
         except Exception as err:
             await self.test_send(f"Webdriver Error: {err}")
