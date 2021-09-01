@@ -331,6 +331,7 @@ class twBNSchat(commands.Cog):
         """initialize selenium for chat fetching"""
         #  await self.config
         if self.driver is None:
+            await ctx.send("Initilizing selenium driver...")
             self.bot.loop.create_task(self.initialize())
         else:
             await ctx.send(f"Driver is already running")

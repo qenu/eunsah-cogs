@@ -232,7 +232,7 @@ class Maplexp(commands.Cog):
             try:
                 old_net = udc[char]["net_exp"]
                 if old_net > net:
-                    await ctx.send("欸，你不可以降...\n如需重置等級，可以用`>m reset char [角色名稱]`")
+                    await ctx.send("欸，你不可以降...\n如需重置等級，可以用`o.m reset char [角色名稱]`")
                     return
                 # exp_growth = net - udc[char]['net_exp']
                 udc[char]["net_exp"] = net  # update net
@@ -428,7 +428,7 @@ class Maplexp(commands.Cog):
                 p = user.display_name
 
             reminder = await ctx.send(
-                p + r"的資料一片空白ʕ´•ᴥ•\`ʔ" + "\n可以使用`>xp [等級] [經驗值]`來新增資料！"
+                p + r"的資料一片空白ʕ´•ᴥ•\`ʔ" + "\n可以使用`o.xp [等級] [經驗值]`來新增資料！"
             )
             await self._remove_after_seconds(ctx.message, MESSAGE_REMOVE_DELAY)
             await self._remove_after_seconds(reminder, 60)
