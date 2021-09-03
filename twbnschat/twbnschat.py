@@ -87,7 +87,7 @@ class twBNSchat(commands.Cog):
         self.driver = webdriver.Chrome(
             options=driver_options,
             desired_capabilities=driver_caps,
-            executable_path=r"/usr/bin/chromedriver",
+            executable_path=r"/home/qenv_dev/chromedriver",
         )
         self.driver.get(
             "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
