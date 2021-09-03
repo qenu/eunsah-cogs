@@ -92,7 +92,10 @@ class twBNSchat(commands.Cog):
         self.driver.get(
             "https://a90ur5.github.io/twBNS_F8ChattingChannel/web/index.html"
         )
-        self._sync = self.bot.loop.create_task(self.start_fetch())
+        
+        await self.test_send(f"driver print: {self.driver}")
+        # if self.driver:
+        # self._sync = self.bot.loop.create_task(self.start_fetch())
 
     async def start_fetch(self):
         # await self.test_send("start")
