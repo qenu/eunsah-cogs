@@ -719,40 +719,40 @@ class Maplexp(commands.Cog):
 
         await ctx.tick()
 
-    @maple_set.command(name="OCR")
-    @checks.is_owner()
-    async def maple_set_OCR(self, ctx: commands.Context, path: Optional[str]):
-        if path:
-            GOOGLE_APPLICATION_CREDENTIALS = path
-            await ctx.send(f"set OCR file path to {path}")
-        else:
-            GOOGLE_APPLICATION_CREDENTIALS = ""
-            await ctx.send(f"removed path for OCR")
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
+    # @maple_set.command(name="OCR")
+    # @checks.is_owner()
+    # async def maple_set_OCR(self, ctx: commands.Context, path: Optional[str]):
+    #     if path:
+    #         GOOGLE_APPLICATION_CREDENTIALS = path
+    #         await ctx.send(f"set OCR file path to {path}")
+    #     else:
+    #         GOOGLE_APPLICATION_CREDENTIALS = ""
+    #         await ctx.send(f"removed path for OCR")
+    #     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
 
-    @commands.command(name="OCRtest")
-    @checks.is_owner()
-    async def OCRtest(self, ctx: commands.Context, link: Optional[str]):
-        try:
-            if link is None:
-                try:
-                    link = ctx.message.attachments[0].url
-                except:
-                    link = None
-            from google.cloud import vision
+    # @commands.command(name="OCRtest")
+    # @checks.is_owner()
+    # async def OCRtest(self, ctx: commands.Context, link: Optional[str]):
+    #     try:
+    #         if link is None:
+    #             try:
+    #                 link = ctx.message.attachments[0].url
+    #             except:
+    #                 link = None
+    #         from google.cloud import vision
 
-            client = vision.ImageAnnotatorClient()
-            response = client.annotate_image(
-                {
-                    "image": {"source": {"image_uri": link}},
-                }
-            )
-            texts = response.text_annotations
-            text = texts[0].description.replace("\n", "").replace(".", "")
+    #         client = vision.ImageAnnotatorClient()
+    #         response = client.annotate_image(
+    #             {
+    #                 "image": {"source": {"image_uri": link}},
+    #             }
+    #         )
+    #         texts = response.text_annotations
+    #         text = texts[0].description.replace("\n", "").replace(".", "")
 
-            await ctx.send(f"Value detected :{text}")
-        except Exception:
-            await ctx.send("Error occured!")
+    #         await ctx.send(f"Value detected :{text}")
+    #     except Exception:
+    #         await ctx.send("Error occured!")
 
     @commands_maple.group(name="reset")
     async def maple_reset(self, ctx):
