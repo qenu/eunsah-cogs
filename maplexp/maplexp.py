@@ -366,39 +366,39 @@ class Maplexp(commands.Cog):
         await ctx.send_help()
         return
 
-    @commands.command(name="maplexpimage", aliases=["xpi"])
-    async def maplexpimage(
-        self, ctx: commands.Context, level: str, link: Optional[str]
-    ):
-        """
-        update xp with image
-        """
-        hold = await ctx.send("處理中...")
-        try:
-            if link is None:
-                try:
-                    link = ctx.message.attachments[0].url
-                except:
-                    link = None
-            from google.cloud import vision
+#     @commands.command(name="maplexpimage", aliases=["xpi"])
+#     async def maplexpimage(
+#         self, ctx: commands.Context, level: str, link: Optional[str]
+#     ):
+#         """
+#         update xp with image
+#         """
+#         hold = await ctx.send("處理中...")
+#         try:
+#             if link is None:
+#                 try:
+#                     link = ctx.message.attachments[0].url
+#                 except:
+#                     link = None
+#             from google.cloud import vision
 
-            client = vision.ImageAnnotatorClient()
-            response = client.annotate_image(
-                {
-                    "image": {"source": {"image_uri": link}},
-                }
-            )
-            texts = response.text_annotations
-            text = texts[0].description.replace("\n", "").replace(".", "")
+#             client = vision.ImageAnnotatorClient()
+#             response = client.annotate_image(
+#                 {
+#                     "image": {"source": {"image_uri": link}},
+#                 }
+#             )
+#             texts = response.text_annotations
+#             text = texts[0].description.replace("\n", "").replace(".", "")
 
-            await hold.delete()
-        except Exception as err:
-            await hold.delete()
-            await ctx.send(f"Error occured! {err}")
-            return
+#             await hold.delete()
+#         except Exception as err:
+#             await hold.delete()
+#             await ctx.send(f"Error occured! {err}")
+#             return
 
-        await self._update(ctx, level=level, exp=text)
-        return
+#         await self._update(ctx, level=level, exp=text)
+#         return
 
     @commands.group(name="maple", aliases=["m"])
     @commands.bot_has_permissions(add_reactions=True, embed_links=True)
